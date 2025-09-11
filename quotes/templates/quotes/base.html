@@ -1,0 +1,31 @@
+<!-- File: quotes/templates/quotes/base.html-->
+<!-- Author: Louise Lee, llouise@bu.edu -->
+<!-- Description: Reusable, consistent structure with a navigation bar and a content block -->
+
+{% load static %}
+<html>
+    <!-- Heading and ref to css-->
+    <head>
+        <title>Paddington Daily Quote!</title>
+        <link rel="stylesheet" href="{% static 'styles.css' %}">
+    </head>
+
+    <body>
+        <!-- Navigation bar -->
+        <nav>
+            <a href="{% url 'home_page' %}">New Quote</a> |
+            <a href="{% url 'show_all_page' %}">Show All</a> |
+            <a href="{% url 'about_page' %}">About</a>
+        </nav>
+
+        <!-- Put page specific content here -->
+        {% block content %}
+        {% endblock %}
+
+        <!-- Footer -->
+        <footer>
+            Quote generated at {{time}}. <br>
+            Hope this Paddington Quote page cheers you up! - llouise@bu.edu
+        </footer>
+    </body>
+</html>

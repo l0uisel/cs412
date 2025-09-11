@@ -1,0 +1,27 @@
+<!-- File: quotes/templates/quotes/show_all.html -->
+<!-- Author: Louise Lee, llouise@bu.edu -->
+<!-- Description: Template to show all quotes and images of Paddington.
+    Extending a base layout and looping through the quotes and images from the view context.
+-->
+
+<!-- Apply the base layout -->
+{% extends 'quotes/base.html' %}
+
+<!-- Base layout start and end points -->
+{% block content %}
+    <h1>All Quotes of Paddington</h1>
+
+    <!-- For loop to list every quote and display in a paragraph-->
+    {% for q in quotes %}
+        <p>{{q}}</p>
+    {% endfor %}
+
+    <hr>
+
+    <!-- For loop to list every image and display in a paragraph-->
+    <h1>All Images of Paddington</h1>
+    {% for i in images %}
+        <p><img src="{{i}}" alt="Paddington Bear"></p>
+    {% endfor %}
+
+{% endblock %}

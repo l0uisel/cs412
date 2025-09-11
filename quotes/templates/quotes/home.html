@@ -1,0 +1,13 @@
+<!-- File: quotes/templates/quotes/home.html-->
+<!-- Author: Louise Lee, llouise@bu.edu -->
+<!-- Description: Home page to display 1 randomly generated quote and image -->
+
+<!-- Apply the base layout -->
+{% extends 'quotes/base.html' %}
+
+<!-- Content within the base layout -->
+{% block content %}
+    <h1>Paddington's Quote of the Day:</h1>
+    <p>Quote: {{quote}}</p><br>
+    <p><img src="{{image}}" alt="Paddington Bear"></p>
+{% endblock %}

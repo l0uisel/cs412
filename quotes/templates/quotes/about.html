@@ -1,0 +1,16 @@
+<!-- file: quotes/templates/quotes/about.html-->
+<!-- author: Louise Lee, llouise@bu.edu -->
+<!-- description: Page to give biographical info of my figure, extending the base layout -->
+
+<!-- Apply the base layout -->
+{% extends 'quotes/base.html' %}
+
+<!-- Content within the base layout -->
+{% block content %}
+    <h1>About Paddington</h1>
+    <h2>Curious about the bear? Here is a short biography.</h2>
+    <p>
+     {{bio}}
+    </p>
+    <p><img src="{{image}}" alt="Paddington Bear Profile"></p>
+{% endblock %}
