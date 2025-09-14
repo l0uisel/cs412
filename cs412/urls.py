@@ -1,5 +1,5 @@
 # file: cs412/urls.py
-# author: Louise Lee, llouise@bu.edu
+# author: Louise Lee, llouise@bu.edu, 09/07/2025
 # description: root URL configuration for cs412 project.
 # maps URL paths from apps and set up static file for development.
 

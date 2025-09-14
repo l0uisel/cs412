@@ -1,5 +1,5 @@
 # File: quotes/views.py
-# Author: Louise Lee, llouise@bu.edu
+# Author: Louise Lee, llouise@bu.edu, 09/07/2025
 # Description: Defines view function, handles rendering of the different pages by using
 # context data (e.g quotes, images, time)
 

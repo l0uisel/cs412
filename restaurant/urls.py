@@ -1,5 +1,5 @@
-# File: quotes/urls.py
-# Author: Louise Lee, llouise@bu.edu, 09/07/2025
+# File: restaurant/urls.py
+# Author: Louise Lee, llouise@bu.edu, , 09/14/2025
 # Description: Defines routing logic for quotes.
 # Maps specific URL paths to view functions that handle specific requests
 
@@ -13,7 +13,7 @@ urlpatterns = [
     # path(r"", views.home, name="home"),  # connects empty string to views.home
     # when to use in front???
     path("", views.home_page, name="home_page"),
-    path("quote", views.home_page, name="home_page"),
-    path("show_all", views.show_all, name="show_all_page"),
-    path("about", views.about, name="about_page"),
+    path("main", views.home_page, name="home_page"),
+    path("order", views.order, name="order_page"),
+    path("confirmation", views.confirmation, name="confirmation_page"),
 ]
