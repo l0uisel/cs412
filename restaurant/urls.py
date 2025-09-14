@@ -12,8 +12,8 @@ from . import views  # from . = local directory
 urlpatterns = [
     # path(r"", views.home, name="home"),  # connects empty string to views.home
     # when to use in front???
-    path("", views.home_page, name="home_page"),
-    path("main", views.home_page, name="home_page"),
+    path("", views.main_page, name="main_page"),
+    path("main", views.main_page, name="main_page"),
     path("order", views.order, name="order_page"),
     path("confirmation", views.confirmation, name="confirmation_page"),
 ]

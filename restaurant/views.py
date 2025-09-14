@@ -10,7 +10,7 @@ import random
 
 
 # View functions for rendering each page
-def home_page(request):
+def main_page(request):
     return
 
 
