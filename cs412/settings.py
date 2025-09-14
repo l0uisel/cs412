@@ -47,9 +47,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # NEW - everytime you create new app you add it here
-    "hw",  # Assignment 1
-    "quotes",  # App for handling Paddington quotes and images
-    "formdata",  # Assignment 2
+    "hw",  # Example 1
+    "quotes",  # A1 - App for handling Paddington quotes and images
+    "formdata",  # Example 2
+    "restaurant",  # A2 - App for handling restaurant order form
 ]
 
 MIDDLEWARE = [

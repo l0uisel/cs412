@@ -35,5 +35,8 @@ urlpatterns = [
     path(
         "formdata/", include("formdata.urls")
     ),  # refer anything with spring formdata/ to formdata app
+    path(
+        "restaurant/", include("restaurant.urls")
+    ),  # refer anything with spring restaurant/ to restaurant app
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 # Serve static files during development
