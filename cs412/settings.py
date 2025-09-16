@@ -1,5 +1,5 @@
 # File: cs412/settings.py
-# Author: Louise Lee, llouise@bu.edu,, 09/07/2025
+# Author: Louise Lee, llouise@bu.edu, 09/07/2025
 # Description: Setting for cs412 project, configures environment
 # e.g installed apps, db, templates, static files and security
 

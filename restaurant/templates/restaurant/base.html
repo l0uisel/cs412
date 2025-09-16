@@ -1,0 +1,30 @@
+<!-- File: restaurant/templates/restaurant/base.html -->
+<!-- Name: Louise Lee, llouise@bu.edu, 09/14/2025 -->
+<!-- Description: Reusable, consistent structure with a navigation bar and a content block -->
+
+{% load static %}
+
+<html>
+   <!-- Heading and ref to css-->
+   <head>
+    <link rel="stylesheet" href="{% static 'styles2.css' %}">
+    <title>bb.q Chicken</title>
+</head>
+
+<body>
+    <!-- Navigation bar -->
+    <nav>
+        <a href="{% url 'main_page' %}">Home</a> |
+        <a href="{% url 'order_page' %}">Order Now!</a>
+    </nav>
+
+    <!-- Put page specific content here -->
+    {% block content %}
+    {% endblock %}
+
+    <!-- Footer -->
+    <footer>
+        bb.q Chicken © 2025 - llouise@bu.edu
+    </footer>
+</body>
+</html>

@@ -10,10 +10,10 @@ from . import views  # from . = local directory
 # URL patterns specific to the quotes app:
 # Variable names django looks for
 urlpatterns = [
-    # path(r"", views.home, name="home"),  # connects empty string to views.home
-    # when to use in front???
-    path("", views.home_page, name="home_page"),
-    path("quote", views.home_page, name="home_page"),
-    path("show_all", views.show_all, name="show_all_page"),
-    path("about", views.about, name="about_page"),
+    # Self-note: path(r"", views.home, name="home"),  # connects empty string to views.home
+    # when to use in front??? - ANS: both fine
+    path(r"", views.home_page, name="home_page"),
+    path(r"quote", views.home_page, name="home_page"),
+    path(r"show_all", views.show_all, name="show_all_page"),
+    path(r"about", views.about, name="about_page"),
 ]
