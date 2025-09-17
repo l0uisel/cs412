@@ -8,6 +8,14 @@ from django.http import HttpRequest, HttpResponse
 import time
 import random
 
+# List of daily specials
+SPECIALS = [
+    "Signature sauce",
+    "Rose sauce",
+    "Mala sauce",
+    "Teriyaki sauce",
+]
+
 
 # View functions for rendering each page
 def main_page(request):
@@ -27,27 +35,50 @@ def main_page(request):
 
 def order(request):
     """Form to order food"""
-    template_name = "formdata/form.html"
+    # Variable to hold template - delegate work to display template
+    template_name = "restaurant/order.html"
 
-    return render(request, template_name)
+    # Pick special randomly from list and place into context dictionary, time
+    context = {
+        "special": random.choice(SPECIALS),
+    }
+    return render(request, template_name, context)
 
 
 def confirmation(request):
-    """Process form submission, generate result"""
-
+    """Process form submission, generate confirmation of submitted order"""
+    # Variable to hold template - delegate work to display template
     template_name = "formdata/confirmation.html"
     print(request.POST)
 
-    # check it POST data was sent with HTTP POST msg:
+    # Check if POST data was sent with HTTP POST msg:
     if request.POST:
-        # extract form fields into variables:
+        # Initiate cost and item list
+        items = []
+        cost = 0
         name = request.POST["name"]
-        favorite_color = request.POST["favorite_color"]
+
+        # Ready time: random value between 30-60mins
+        minutes = random.randint(30, 60)
+        ready = time.ctime() + minutes
+
+        # Extract form fields into variables:
+        # Special
+        if request.POST.get("special"):
+        
+        # Wings
+            
+        # Sides
 
         # Create dictionary - context variables for use in template
         context = {
+            "items": items,
+            "cost": cost,
+            "ready": ready,
             "name": name,
-            "favorite_color": favorite_color,
+            "phone": phone,
+            "email": email,
+            "instructions": instructions,
         }
 
     # Delegate response to template, provide context variables

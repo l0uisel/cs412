@@ -1,0 +1,31 @@
+<!-- File: restaurant/templates/restaurant/confirmation.html -->
+<!-- Name: Louise -->
+<!-- Description:  -->
+
+{% extends 'restaurant/base.html' %}
+
+{% block content %}
+<div>
+    <h1>Confirmation</h1>
+
+    <p>
+        Hi, {{name}}! Your order will be ready at #time 30-60min from now#.
+    </p>
+
+    <h2>Order:</h2>
+    <p>
+        {{special}}
+        {{wings}
+        {{sides}}}
+    </p>
+
+    <h2>Price:</h2>
+
+    <!-- if statements?? -->
+    <h2>Special Instructions:</h2>
+
+    <h2>Contact information:</h2>
+
+
+</div>
+{% endblock %}

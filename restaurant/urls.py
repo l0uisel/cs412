@@ -11,9 +11,8 @@ from . import views  # from . = local directory
 # Variable names django looks for
 urlpatterns = [
     # path(r"", views.home, name="home"),  # connects empty string to views.home
-    # when to use in front???
-    path("", views.main_page, name="main_page"),
-    path("main", views.main_page, name="main_page"),
-    path("order", views.order, name="order_page"),
-    path("confirmation", views.confirmation, name="confirmation_page"),
+    path(r"", views.main_page, name="main_page"),
+    path(r"main", views.main_page, name="main_page"),
+    path(r"order", views.order, name="order_page"),
+    path(r"confirmation", views.confirmation, name="confirmation_page"),
 ]
