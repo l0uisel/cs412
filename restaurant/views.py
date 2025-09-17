@@ -58,7 +58,7 @@ def order(request):
 def confirmation(request):
     """Process form submission, generate confirmation of submitted order"""
     # Variable to hold template - delegate work to display template
-    template_name = "formdata/confirmation.html"
+    template_name = "restaurant/confirmation.html"
     print(request.POST)
 
     # Check if POST data was sent with HTTP POST msg:
@@ -70,30 +70,43 @@ def confirmation(request):
         # Extract form fields into variables:
         # Special
         if "special" in request.POST:
-            item = request.POT["special"]
+            item = request.POST["special"]
             price = 2
             items.append(item)
             cost += price
 
         # Wings
         for w in request.POST.getlist("wings"):
-            if w == "golden":
-                items.append("Golden wings")
-
-            elif w == "hot":
-                items.append("Hot spicy wings")
-
+            if w == "hot":
+                # Spiciness applies only to hot
+                spice = request.POST.get("hot_spice", "same")
+                items.append(f"Hot spicy wings ({spice})")
+                cost += WING_PRICE
+            elif w == "golden":
+                items.append("Golden original wings")
+                cost += WING_PRICE
             elif w == "cheesling":
                 items.append("Cheesling wings")
-
+                cost += WING_PRICE
             elif w == "honey":
                 items.append("Honey garlic wings")
-
+                cost += WING_PRICE
             elif w == "soy":
                 items.append("Soy garlic wings")
-        cost += 15
+                cost += WING_PRICE
 
         # Sides
+        for s in request.POST.getlist("sides"):
+            if s in SIDE_PRICES:
+                label = {
+                    "radish": "Pickled radish",
+                    "rice": "Steamed rice",
+                    "coleslaw": "Cole slaw",
+                    "fries": "French fries",
+                    "sticks": "Cheese sticks",
+                }[s]
+                items.append(label)
+                cost += SIDE_PRICES[s]
 
         # Contact info
         name = request.POST["name"]
@@ -103,13 +116,15 @@ def confirmation(request):
 
         # Ready time: random value between 30-60mins
         minutes = random.randint(30, 60)
-        ready = time.ctime() + minutes
+        future = time.time() + minutes * 60
+        ready = time.ctime(future)
 
         # Create dictionary - context variables for use in template
         context = {
             "items": items,
             "cost": cost,
             "ready": ready,
+            "minutes": minutes,
             "name": name,
             "phone": phone,
             "email": email,

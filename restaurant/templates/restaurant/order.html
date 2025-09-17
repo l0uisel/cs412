@@ -7,7 +7,7 @@
 {% block content %}
 <div>
     <h1>Place Your Order</h1>
-    <form action="{% url 'submit'%}" method="POST">
+    <form action="{% url 'confirmation_page' %}" method="POST">
         {% csrf_token %}
 
     <h3>~~ Daily Special Sauces - $2 ~~</h3>
@@ -17,10 +17,15 @@
     <h3>~~ Regular menu ~~</h3>
     <h4>CHICKEN WINGS (set of 8) - $15</h4>
         <input type="checkbox" name="wings" value="golden"> Golden original
-        <input type="checkbox" name="wings" value="hot"> Hot spicy
         <input type="checkbox" name="wings" value="cheesling"> Cheesling
         <input type="checkbox" name="wings" value="honey"> Honey garlic
         <input type="checkbox" name="wings" value="soy"> Soy garlic
+        <input type="checkbox" name="wings" value="hot"> Hot spicy
+        <em>Spiciness for Hot spicy:</em>
+        <input type="radio" name="hot_spice" value="same"> same
+        <input type="radio" name="hot_spice" value="more"> more
+        <input type="radio" name="hot_spice" value="less"> less
+        <br><br>
     <br>
 
     <h4>SIDES</h4>

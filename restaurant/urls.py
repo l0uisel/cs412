@@ -7,7 +7,7 @@ from django.urls import path  # from django urls library
 from django.conf import settings  # include installed apps
 from . import views  # from . = local directory
 
-# URL patterns specific to the quotes app:
+# URL patterns specific to the restaurant app:
 # Variable names django looks for
 urlpatterns = [
     # path(r"", views.home, name="home"),  # connects empty string to views.home
@@ -15,4 +15,8 @@ urlpatterns = [
     path(r"main", views.main_page, name="main_page"),
     path(r"order", views.order, name="order_page"),
     path(r"confirmation", views.confirmation, name="confirmation_page"),
+    # Trailing slashes in case
+    path("main/", views.main_page, name="main_page_slash"),
+    path("order/", views.order, name="order_page_slash"),
+    path("confirmation/", views.confirmation, name="confirmation_page_slash"),
 ]
