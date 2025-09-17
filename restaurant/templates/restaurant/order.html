@@ -11,32 +11,25 @@
         {% csrf_token %}
 
     <h3>~~ Daily Special Sauces - $2 ~~</h3>
-        <input type="checkbox" name="special" value="2"> {{special}}
-
-    <br>
+        <input type="checkbox" name="special" value="{{special}}"> {{special}}
+    <br><br>
 
     <h3>~~ Regular menu ~~</h3>
     <h4>CHICKEN WINGS (set of 8) - $15</h4>
-    <form action="{% url 'submit'%}" method="POST">
-        {% csrf_token %}
-        <input type="checkbox" name="golden" value="15"> Golden original
-        <input type="checkbox" name="hot" value="15"> Hot spicy
-        <input type="checkbox" name="cheesling" value="15"> Cheesling
-        <input type="checkbox" name="honey" value="15"> Honey garlic
-        <input type="checkbox" name="soy" value="15"> Soy garlic
-
+        <input type="checkbox" name="wings" value="golden"> Golden original
+        <input type="checkbox" name="wings" value="hot"> Hot spicy
+        <input type="checkbox" name="wings" value="cheesling"> Cheesling
+        <input type="checkbox" name="wings" value="honey"> Honey garlic
+        <input type="checkbox" name="wings" value="soy"> Soy garlic
     <br>
 
     <h4>SIDES</h4>
-    <form action="{% url 'submit'%}" method="POST">
-        {% csrf_token %}
-        <input type="checkbox" name="radish" value="1"> Pickled radish ($1)
-        <input type="checkbox" name="radish" value="2"> Steamed rice ($2)
-        <input type="checkbox" name="radish" value="4">Cole slaw ($4)
-        <input type="checkbox" name="radish" value="7"> French fries ($7)
-        <input type="checkbox" name="radish" value="8"> Cheese sticks ($8)
-    
-    <br>
+        <input type="checkbox" name="sides" value="radish"> Pickled radish ($1)
+        <input type="checkbox" name="sides" value="rice"> Steamed rice ($2)
+        <input type="checkbox" name="sides" value="coleslaw">Cole slaw ($4)
+        <input type="checkbox" name="sides" value="fries"> French fries ($7)
+        <input type="checkbox" name="sides" value="sticks"> Cheese sticks ($8)
+    <br><br>
 
     <h3>- Contact Details -</h3>
         Name: <input type="text" name="name">
@@ -46,10 +39,10 @@
     <br>
 
     <h3>- Special Instructions -</h3>
-        Please share any special instructions: <input type="text" name="instructions">
+        <input type="text" name="instructions">
     <br><br>
+
     <input type="submit">
-    <form action="{% url 'submit'%}" method="POST"></form>
     </form>
 </div>
 {% endblock content %}

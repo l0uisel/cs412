@@ -9,22 +9,29 @@
     <h1>Confirmation</h1>
 
     <p>
-        Hi, {{name}}! Your order will be ready at #time 30-60min from now#.
+        Hi, {{name}}! Your order will be ready at around {{ready}}.
     </p>
 
     <h2>Order:</h2>
-    <p>
-        {{special}}
-        {{wings}
-        {{sides}}}
-    </p>
+    <ul>
+        {% for item in items %}
+            <li>{{item}}</li>
+        {% endfor %}
+        </ul>
+        <p><strong>Total: ${{cost}}</strong></p>
 
     <h2>Price:</h2>
 
     <!-- if statements?? -->
     <h2>Special Instructions:</h2>
+    <p>{{instructions}}</p>
 
     <h2>Contact information:</h2>
+    <p>
+        Name: {{name}}<br>
+        Phone: {{phone}}<br>
+        Email: {{email}}
+    </p>
 
 
 </div>

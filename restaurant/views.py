@@ -16,6 +16,16 @@ SPECIALS = [
     "Teriyaki sauce",
 ]
 
+SPECIAL_PRICE = 2
+WING_PRICE = 15
+SIDE_PRICES = {
+    "radish": 1,
+    "rice": 2,
+    "coleslaw": 4,
+    "fries": 7,
+    "sticks": 8,
+}
+
 
 # View functions for rendering each page
 def main_page(request):
@@ -56,19 +66,44 @@ def confirmation(request):
         # Initiate cost and item list
         items = []
         cost = 0
+
+        # Extract form fields into variables:
+        # Special
+        if "special" in request.POST:
+            item = request.POT["special"]
+            price = 2
+            items.append(item)
+            cost += price
+
+        # Wings
+        for w in request.POST.getlist("wings"):
+            if w == "golden":
+                items.append("Golden wings")
+
+            elif w == "hot":
+                items.append("Hot spicy wings")
+
+            elif w == "cheesling":
+                items.append("Cheesling wings")
+
+            elif w == "honey":
+                items.append("Honey garlic wings")
+
+            elif w == "soy":
+                items.append("Soy garlic wings")
+        cost += 15
+
+        # Sides
+
+        # Contact info
         name = request.POST["name"]
+        phone = request.POST["phone"]
+        email = request.POST["email"]
+        instructions = request.POST["instructions"]
 
         # Ready time: random value between 30-60mins
         minutes = random.randint(30, 60)
         ready = time.ctime() + minutes
-
-        # Extract form fields into variables:
-        # Special
-        if request.POST.get("special"):
-        
-        # Wings
-            
-        # Sides
 
         # Create dictionary - context variables for use in template
         context = {
