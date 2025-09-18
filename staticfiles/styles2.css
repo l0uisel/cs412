@@ -1,36 +1,44 @@
-/* File: static/styles.css */
-/* Author: Louise Lee, llouise@bu.edu, 09/07/2025 */
-/* Description: Styling for my pages */
+/* File: static/styles2.css */
+/* Author: Louise Lee, llouise@bu.edu, 09/14/2025 */
+/* Description: Styling for assignment 2 restaurant form */
 body {
-    background-color: #fff; /* Set background to white */
-    color: slategray;       /* Set default text color */
+    background-color: #f0e7e0; /* Set background to white */
+    color: rgb(160, 69, 69);       /* Set default text color */
     font-family: arial;     /* Set font family */
     font-size: larger;      /* Increase default font size */
 }
+
+.centered-block {
+    text-align: center; /* Centering for main page text */
+  }
 
 h2,h3,h4,h5{
     font-weight: normal;
     background:rgb(227, 212, 195); /* Light beige background for subheadings */
     margin: 0;
     text-align: center;
+    color:rgb(198, 72, 50);
+    height: 50px;
+    line-height: 50px;
 }
 
 h1 {
     font-weight: bold;
-    background:rgb(207, 228, 247); /* Light blue background for main heading */
-    color: tomato;
+    background:rgb(200, 87, 87); /* Light red background for main heading */
+    color:rgb(135, 27, 27);
     text-align: center;
+    height: 80px;
+    line-height: 80px;
 }
 
 a, a:visited {
-    color: slategray;
+    color: rgb(200, 87, 87);
     text-decoration: none;
 }
 
 a:hover {
     color: rgb(255, 178, 71);
     text-decoration: none;
-    background-color: white;
     font-weight: bold;
 }
 
@@ -44,7 +52,7 @@ header {
     width: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr; /* Two equal columns layout */
-    background:aliceblue;
+    background:rgb(49, 13, 13);
     position: fixed;                /* Keep header fixed at the top */
     top: 0px;
     z-index: 999;                  /* Ensure header is above other elements */
@@ -53,12 +61,14 @@ header {
 
 footer {
     width: 100%;
-    color: slateblue;
+    color:rgb(198, 57, 57);
     text-align: center;
-    background:aliceblue;
+    background:rgb(49, 13, 13);
     /* background-size: 100;
     position: fixed; */
-    bottom: 0px;
+    height: 50px;
+    line-height: 50px;
+
 }
 
 img {
@@ -107,20 +117,20 @@ section {
 
 
 nav {
-    justify-self: end;
-    background: none;
-    color: rgb(11, 117, 216);
-    /* border: 1px solid; */
-}
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 0;
+    background: rgb(49, 13, 13);
+    border-radius: 10px;
+    margin-bottom: 16px;
+  }
 
-nav li {
-    display: inline-block;
-    margin-left: 20px;
-}
 
 nav button {
     background: none;
-    color: slategray;
+    color: rgb(200, 87, 87);
     font-family: Arial;
     cursor: pointer; 
     border: 0;
@@ -171,7 +181,7 @@ nav button {
 
 /* must have no space before :hover */
 .mc-table-row:hover {
-    background-color: aliceblue;    
+    background-color: rgb(40, 43, 45);    
     border: 1px solid;
 }
 
@@ -221,6 +231,23 @@ nav button {
     padding: 0px;
 }
 
+/* ---- Forms (Order page) ---- */
+form {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  form h3 {
+    margin-top: 8px;
+  }
+  
+  form h4 {
+    color: var(--muted);
+    font-weight: 700;
+    margin: 4px 0 8px;
+  }
 
 /* responsive styles when width is less than 1400px */
 @media screen and (max-width: 560px) {
@@ -237,7 +264,7 @@ nav button {
     
     nav button {
         background: none;
-        color: slategray;
+        color:rgb(97, 133, 169);
         font-family: Arial;
         cursor: pointer; 
         border: 0;
