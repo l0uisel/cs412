@@ -1,21 +1,26 @@
 <!-- File: restaurant/templates/restaurant/order.html -->
 <!-- Name: Louise -->
-<!-- Description:  -->
+<!-- Description: Page containing the online order form. Users can choose
+daily specials, wings (with spiciness option for hot wings), sides
+also provide contact details and instructions. -->
 
 {% extends 'restaurant/base.html' %}
 
 {% block content %}
 <div>
     <h1>Place Your Order</h1>
+    <!-- Form posts to confirmation page -->
     <form action="{% url 'confirmation_page' %}" method="POST">
         {% csrf_token %}
 
     <h3>~~ Daily Special Sauces - $2 ~~</h3>
+    <!-- Random special -->
         <input type="checkbox" name="special" value="{{special}}"> {{special}}
     <br><br>
 
     <h3>~~ Regular menu ~~</h3>
     <h4>CHICKEN WINGS (set of 8) - $15</h4>
+    <!-- Wings options as checkboxes, assign label to item -->
         <input type="checkbox" name="wings" value="golden"> Golden original
         <br><br>
         <input type="checkbox" name="wings" value="cheesling"> Cheesling
@@ -25,15 +30,18 @@
         <input type="checkbox" name="wings" value="soy"> Soy garlic
         <br><br>
         <input type="checkbox" name="wings" value="hot"> Hot spicy
+
+        <!-- Radio buttons selecting spiciness (default is same) -->
         <p style="text-indent: 1em;"><em>Spiciness for Hot spicy:</em>
-        <input type="radio" name="hot_spice" value="same"> same
-        <input type="radio" name="hot_spice" value="more"> more
-        <input type="radio" name="hot_spice" value="less"> less
+        <input type="radio" name="hot_spice" value="same" checked> Same
+        <input type="radio" name="hot_spice" value="more"> More
+        <input type="radio" name="hot_spice" value="less"> Less
         </p>
         <br><br>
     <br>
 
     <h4>SIDES</h4>
+    <!-- Sides options as checkboxes, assign label to item -->
         <input type="checkbox" name="sides" value="radish"> Pickled radish ($1)
         <input type="checkbox" name="sides" value="rice"> Steamed rice ($2)
         <input type="checkbox" name="sides" value="coleslaw">Cole slaw ($4)
@@ -42,6 +50,7 @@
     <br>
 
     <h3>~~ Contact Details ~~</h3>
+    <!-- Fill out contact info, text input -->
     <br>
         Name: <input type="text" name="name">
         <br><br>
@@ -52,10 +61,12 @@
     <br>
 
     <h3>~~ Special Instructions ~~</h3>
+    <!-- Increase textbox size for instructions -->
     <br>
-        <input type="text" name="instructions">
+        <input type="text" name="instructions" style="width: 500px; height: 30px;">
     <br><br>
 
+    <!-- Submit -->
     <input type="submit">
     </form>
 </div>

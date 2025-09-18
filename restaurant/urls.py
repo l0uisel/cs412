@@ -10,7 +10,6 @@ from . import views  # from . = local directory
 # URL patterns specific to the restaurant app:
 # Variable names django looks for
 urlpatterns = [
-    # path(r"", views.home, name="home"),  # connects empty string to views.home
     path(r"", views.main_page, name="main_page"),
     path(r"main", views.main_page, name="main_page"),
     path(r"order", views.order, name="order_page"),

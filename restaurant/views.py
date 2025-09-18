@@ -2,6 +2,7 @@
 # Author: Louise Lee, llouise@bu.edu, 09/14/2025
 # Description: Defines view function, handles rendering of the different pages by using
 # context data (e.g lists/tables, images, time)
+# pages: main (basic info), order (form), confirmation (process submitted order, display confirmation)
 
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse
@@ -16,15 +17,9 @@ SPECIALS = [
     "Teriyaki sauce",
 ]
 
+# Standard prices
 SPECIAL_PRICE = 2
 WING_PRICE = 15
-SIDE_PRICES = {
-    "radish": 1,
-    "rice": 2,
-    "coleslaw": 4,
-    "fries": 7,
-    "sticks": 8,
-}
 
 
 # View functions for rendering each page
@@ -76,12 +71,16 @@ def confirmation(request):
             cost += price
 
         # Wings
+        # Loop through the multiple checkbox options
         for w in request.POST.getlist("wings"):
+            # If hot spicy wings selected, include spiciness option in list
             if w == "hot":
-                # Spiciness applies only to hot
                 spice = request.POST.get("hot_spice", "same")
                 items.append(f"Hot spicy wings ({spice})")
                 cost += WING_PRICE
+
+            # Other wings, check selection then add the flavor to the item list
+            # Add $15 if item selected
             elif w == "golden":
                 items.append("Golden original wings")
                 cost += WING_PRICE
@@ -96,17 +95,24 @@ def confirmation(request):
                 cost += WING_PRICE
 
         # Sides
+        # Look up name and append item and cost if exist
+        # Append item to list and increment cost
         for s in request.POST.getlist("sides"):
-            if s in SIDE_PRICES:
-                label = {
-                    "radish": "Pickled radish",
-                    "rice": "Steamed rice",
-                    "coleslaw": "Cole slaw",
-                    "fries": "French fries",
-                    "sticks": "Cheese sticks",
-                }[s]
-                items.append(label)
-                cost += SIDE_PRICES[s]
+            if s == "radish":
+                items.append("Pickled radish")
+                cost += 1
+            elif s == "rice":
+                items.append("Steamed rice")
+                cost += 2
+            elif s == "coleslaw":
+                items.append("Cole slaw")
+                cost += 4
+            elif s == "fries":
+                items.append("French fries")
+                cost += 7
+            elif s == "sticks":
+                items.append("Cheese sticks")
+                cost += 8
 
         # Contact info
         name = request.POST["name"]
@@ -132,4 +138,5 @@ def confirmation(request):
         }
 
     # Delegate response to template, provide context variables
+    # Render confirmation page w these context variables
     return render(request, template_name=template_name, context=context)

@@ -1,6 +1,9 @@
 <!-- File: restaurant/templates/restaurant/confirmation.html -->
 <!-- Name: Louise -->
-<!-- Description:  -->
+<!-- Description:  Displays order confirmation after form submission.
+Shows name, estimated ready time, order items, price
+special instructions, and contact details. -->
+
 
 {% extends 'restaurant/base.html' %}
 
@@ -8,20 +11,25 @@
 <div>
     <h1>Confirmation</h1>
 
+    <!-- Greeting and time -->
     <p>
         Hi, {{name}}! Your order will be ready in {{minutes}} minutes.
         <br><br>
-        <strong>Estimated time:</strong>> {{ready}}
+        <strong>Estimated time:</strong> {{ready}}
     </p>
 
+    <!-- Ordered items-->
     <h2>Order:</h2>
     <ul>
         {% for item in items %}
+            <!-- Each item displayed as list -->
             <li>{{item}}</li>
         {% endfor %}
         </ul>
+        <!-- Show calculated total -->
         <p><strong>Total: ${{cost}}</strong></p>
 
+        
     <h2>Special Instructions:</h2>
     <p>{{instructions}}</p>
 

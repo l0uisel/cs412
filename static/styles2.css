@@ -8,6 +8,10 @@ body {
     font-size: larger;      /* Increase default font size */
 }
 
+.centered-block {
+    text-align: center; /* Centering for main page text */
+  }
+
 h2,h3,h4,h5{
     font-weight: normal;
     background:rgb(227, 212, 195); /* Light beige background for subheadings */

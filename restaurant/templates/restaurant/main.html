@@ -1,20 +1,23 @@
 <!-- File: restaurant/templates/restaurant/main.html-->
 <!-- Author: Louise Lee, llouise@bu.edu, 09/14/2025 -->
-<!-- Description: Home page to introduce restaurant -->
+<!-- Description: Home page to introduce restaurant. isplays name, location,
+hours of operation, and several images  -->
 
 <!-- Apply the base layout -->
 {% extends 'restaurant/base.html' %}
 
 <!-- Content within the base layout -->
 {% block content %}
-    <h1>Welcome to the Finest Fried Chicken</h1>
+    <h1>Welcome to bb.q Chicken</h1>
+    <div class="centered-block">
     <p><img src="{{feast}}" alt="Assortment of food"></p>
     <hr>
     <p><strong>Location:</strong> 636 Beacon St, Boston, MA 02215</p>
-    <p><img src="{{outside}}" alt="Store outside"></p>
+    <p><img src="{{outside}}" width="500px" alt="Store outside"></p>
 
     <p><strong>Opening Hours:</strong> Mon - Sun: 11AM - 10PM</p>
-    <p><img src="{{inside}}" alt="Store inside"></p>
+    <p><img src="{{inside}}" width="500px" alt="Store inside"></p>
     <p><img src="{{chicken}}" alt="Chicken bowl"></p>
+    </div>
 
 {% endblock %}
