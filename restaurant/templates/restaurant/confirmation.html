@@ -4,7 +4,6 @@
 Shows name, estimated ready time, order items, price
 special instructions, and contact details. -->
 
-
 {% extends 'restaurant/base.html' %}
 
 {% block content %}
@@ -29,7 +28,8 @@ special instructions, and contact details. -->
         <!-- Show calculated total -->
         <p><strong>Total: ${{cost}}</strong></p>
 
-        
+    
+    <!-- Special instructions and contact-->
     <h2>Special Instructions:</h2>
     <p>{{instructions}}</p>
 
