@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "quotes",  # A1 - App for handling Paddington quotes and images
     "formdata",  # Example 2
     "restaurant",  # A2 - App for handling restaurant order form
+    "blog",  # A3
 ]
 
 MIDDLEWARE = [

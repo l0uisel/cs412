@@ -38,5 +38,6 @@ urlpatterns = [
     path(
         "restaurant/", include("restaurant.urls")
     ),  # refer anything with spring restaurant/ to restaurant app
+    path("blog/", include("blog.urls")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 # Serve static files during development
