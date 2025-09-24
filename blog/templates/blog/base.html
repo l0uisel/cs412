@@ -11,6 +11,12 @@
 <body>
     <head>
         <h1>Blog</h1>
+        <nav>
+            <ul>
+              <li><a href="{% url 'random' %}">Random</a></li>
+              <li><a href="{% url 'show_all' %}">Show All</a></li>
+            </ul>
+          </nav>
     </head>
 </body>
 {% block content %}
