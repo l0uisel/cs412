@@ -1,0 +1,21 @@
+<!-- blog/show_all.html-->
+{%extends 'blog/base.html'%}
+
+<h1>Show all articles</h1>
+
+<!-- {{articles}} -->
+
+{% block content %}
+<div>
+    <!-- Scriplet for loop -->
+    {% for article in articles %}
+    <div>
+        <h2>{{article.title}}</h2>
+        <h3>by {{article.author}}</h3>
+        <p> {{article.text}}</p>
+        <img scr="{{article.image_url}}" alt = image>
+        <hr>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

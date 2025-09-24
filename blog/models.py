@@ -10,6 +10,9 @@ class Article(models.Model):
     author = models.TextField(blank=True)
     text = models.TextField(blank=True)
     published = models.DateTimeField(auto_now=True)  # set time to now
+    image_url = models.URLField(
+        blank=True
+    )  # makemigrations and migrate when change attributions
 
     # Indent into Article class
     def __str__(self):
