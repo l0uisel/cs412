@@ -1,3 +1,0 @@
-# blog/urls.py
-
-urlpatterns = []
