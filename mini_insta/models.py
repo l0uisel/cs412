@@ -1,6 +1,6 @@
 # File: mini_insta/models.py
 # Author: Louise Lee, llouise@bu.edu, 09/24/2025
-# Description: -----
+# Description: Models define the fields (columns) of database, specifying data types, values, rules
 
 from django.db import models
 
