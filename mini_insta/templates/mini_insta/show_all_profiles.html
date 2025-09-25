@@ -1,0 +1,18 @@
+<!-- mini_insta/show_all.html-->
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+<h1>MiniInsta Profiles</h1>
+
+<main class="grid-container">
+    <!-- Scriplet for loop -->
+    {% for profile in profiles %}
+    <profile>
+        <img src="{{profile.profile_image_url}}" alt = "profile image">
+            </a>
+            <hr>
+        </div>
+    </profile>
+    {% endfor %}
+</main>
+{% endblock %}

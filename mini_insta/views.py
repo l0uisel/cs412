@@ -18,7 +18,7 @@ class ProfileListView(ListView):
 
     # model name and template you want to use
     model = Profile
-    template_name = "blog/show_all.html"
+    template_name = "blog/show_all_profiles.html"
     # variable within html page, contain many article instances
     context_object_name = "articles"
 
