@@ -3,23 +3,19 @@
 <!-- Description: Reusable, consistent structure with a navigation bar and a content block -->
 
 {% load static %}
-
-
 <html>
-    <head><title>MiniInsta1</title></head>
+  <head>
+    <title>MiniInsta</title>
     <link rel="stylesheet" href="{% static 'styles-insta.css' %}">
-</head>
+  </head>
 
-<body>
-    <head>
-        <h1>MiniInsta</h1>
-        <nav>
-            <ul>
-              <li><a href="{% url 'show_all' %}">Show All</a></li>
-            </ul>
-          </nav>
-    </head>
-</body>
-{% block content %}
-{% endblock %}
+  <body>
+    {% block content %}
+    {% endblock %}
+
+    <footer>
+      <a href="{% url 'show_all_profiles' %}">Show All Profiles</a>
+    </footer>
+
+  </body>
 </html>

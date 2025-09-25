@@ -1,4 +1,8 @@
-<!-- mini_insta/show_all.html-->
+<!-- File: mini_insta/templates/mini_insta/show_all_profiles.html-->
+<!-- Author: Louise Lee, llouise@bu.edu, 09/24/2025 -->
+<!-- Description: Reusable, consistent structure with a navigation bar and a content block
+    Shows all profile in a grid linking to individual profiles -->
+
 {% extends 'mini_insta/base.html' %}
 
 {% block content %}
@@ -7,12 +11,12 @@
 <main class="grid-container">
     <!-- Scriplet for loop -->
     {% for profile in profiles %}
-    <profile>
-        <img src="{{profile.profile_image_url}}" alt = "profile image">
+    <div>
+        <a href="{% url 'show_profile' profile.pk %}">
+            <img src="{{profile.profile_image_url}}" alt = "Profile image">
             </a>
             <hr>
-        </div>
-    </profile>
+    </div>
     {% endfor %}
 </main>
 {% endblock %}

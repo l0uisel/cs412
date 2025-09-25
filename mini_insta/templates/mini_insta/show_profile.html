@@ -1,23 +1,23 @@
-<!-- mini_insta/profile.html-->
-{%extends 'mini_insta/base.html'%}
+<!-- File: mini_insta/templates/mini_insta/show_all_profiles.html-->
+<!-- Author: Louise Lee, llouise@bu.edu, 09/25/2025 -->
+<!-- Description: Displays a single Profile in detail with placeholders for future features -->
+
+{% extends 'mini_insta/base.html' %}
 
 {% block content %}
-<h1>MiniInsta: {{profile.username}}</h1>
-
-<!-- {{articles}} -->
+<h1>MiniInsta: @{{profile.username}}</h1>
 
 <main class="grid-container">
-    <img src="{{profile.profile_image_url}}" alt = "image">
+    <h1>{{profile.display_name}}</h1>
+    <img src="{{profile.profile_image_url}}" alt = "Profile image">
     <hr>
-    <!-- followers, following, posts made -->
+    <li>followers, following, posts made</li>
     <article>
         <div>
-        <h2>{{profile.display_name}}</h2>
-        <p>{{profile.join_date}}</p>
-        <h3>by {{profile.bio_text}}</h3>
+        <p>Join Date: {{profile.join_date}}</p>
+        <p>b {{profile.bio_text}}</p>
         </div>
     </article>
-
-    <p>Posts: No Posts</p>
 </main>
+    <p>Posts: No Posts</p>
 {% endblock %}
