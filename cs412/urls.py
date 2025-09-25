@@ -38,6 +38,9 @@ urlpatterns = [
     path(
         "restaurant/", include("restaurant.urls")
     ),  # refer anything with spring restaurant/ to restaurant app
-    path("blog/", include("blog.urls")),
+    path("blog/", include("blog.urls")),  # refer anything with spring blog/ to blog app
+    path(
+        "mini_insta/", include("mini_insta.urls")
+    ),  # refer anything with spring mini_insta/ to mini_insta app
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 # Serve static files during development
