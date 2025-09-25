@@ -2,7 +2,7 @@
 
 body {
     margin: 30px;
-    background: #d1dedd;
+    background: #e6dfe7;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -12,11 +12,11 @@ ul, li {
 }
 
 h1, h2, h3 {
-    color: #767f7e;
+    color: #485654;
 }
 
 p {
-    color: #828b82;
+    color: #485654;
 }
 
 header {
@@ -24,39 +24,124 @@ header {
     margin: 40px auto;
     border-bottom: 1px solid #bbc7c7;
 }
-.grid-container {
-    background: #eee;
-    max-width: 900px;
+/* ---------- LIST PAGE (show_all_profiles) ---------- */
+
+.grid-container{
     display: grid;
-    /* grid-template-columns: 300px 300px 300px; */
-    grid-template-columns: repeat(3, 1fr);
-     grid-gap: 10px;
+    /* squares in rows */
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
     max-width: 1200px;
-    margin: 20px auto;
-}
-
-article.featured {
-    grid-column: span 3;
-    display: grid; /* nested grid */
-    gap: 60px;
-    grid-template-columns: 1fr 1fr;
-    align-items: center;
-    border-bottom: 1px #bbc7c7;
-    padding-bottom: 40px;
-}
-
-article img, article.featured img {
+    margin: 12px auto 28px;
+    padding: 0 16px;
+  }
+  
+  /* each tile is a square, with rounded corners + shadow */
+  .profile-card{
+    border-radius: 14px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: var(--shadow);
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  
+  .profile-card:hover{
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, .12);
+  }
+  
+  /* the image fills the square and is cropped, not stretched */
+  .profile-card img{
     width: 100%;
-    border: 4px solid #fff;
-    border-radius: 8px;
-}
-article p, article h3 {
-    margin: 20px 10px;
+    height: 100%;
+    object-fit: cover;              /* <— crops to square */
+    display: block;
+  }
+  
+/* ---------- DETAIL PAGE (show_profile) ---------- */
+body{ font-size: 18px; }
 
+.profile-container{
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px 108px;
 }
+
+.profile{
+  display: grid;
+  grid-template-columns: 220px 1fr; /* avatar column bigger */
+  gap: 36px;                        /* wider spacing */
+  align-items: center;
+  margin: 20px 0 24px;
+}
+
+.profile img{
+  width: 220px; height: 220px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 6px solid #fff;
+  box-shadow: var(--shadow);
+  outline: 4px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* stats row (posts/followers/following) */
+.stats{
+  display: grid;
+  grid-template-columns: repeat(3, minmax(240px, 1fr)); /* bigger pills */
+  gap: 20px;
+  margin: 16px 0 10px;
+}
+
+/* section titles & body text */
+.section-title{
+  margin-top: 28px;
+  font-weight: 800;
+  color: black;
+  font-size: 1.6rem;
+}
+
+/* bio lines */
+.bio{ list-style: none; padding: 0; margin: 16px 0 0; }
+.bio li{ margin: 10px 0; font-size: 1.125rem; }
 
 nav li {
     display: inline;
+}
+
+.footer {
+    background:rgb(183, 182, 185);
+    width: 100%;
+    color:rgb(88, 58, 148);
+    /* background-size: 100;
+    position: fixed; */
+    height: 100px;
+    line-height: 100px;
+    display: flex; align-items:
+    center; gap: 12px;
+
+}
+
+.footer-pfp{
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+    outline: 2px solid var(--accent, #8b5cf6);
+    display: block;
+  }
+
+  a, a:visited {
+    font-size: 20px;
+    color: rgb(97, 15, 211);
+    text-decoration: none;
+}
+
+a:hover {
+    font-size: 20px;
+    color: rgb(183, 78, 240);
+    text-decoration: none;
+    font-weight: bold;
 }
 /* responsive styles: adapt to smaller screen sizes */
 @media screen and (max-width: 980px) {

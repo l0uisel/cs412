@@ -13,9 +13,14 @@
     {% block content %}
     {% endblock %}
 
-    <footer>
-      <a href="{% url 'show_all_profiles' %}">Show All Profiles</a>
-    </footer>
+    <div class = footer>
+      <a href="{% url 'show_all_profiles' %}"> Show All Profiles</a>
+      {% if profile %}
+      <a href="{% url 'show_profile' profile.pk %}">
+        <img class = "footer-pfp" src="{{ profile.profile_image_url }}" alt="Profile image">
+      </a>
+      {% endif %}
+    </div>
 
   </body>
 </html>

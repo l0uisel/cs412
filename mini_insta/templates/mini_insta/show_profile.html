@@ -7,17 +7,39 @@
 {% block content %}
 <h1>MiniInsta: @{{profile.username}}</h1>
 
-<main class="grid-container">
-    <h1>{{profile.display_name}}</h1>
-    <img src="{{profile.profile_image_url}}" alt = "Profile image">
-    <hr>
-    <li>followers, following, posts made</li>
-    <article>
+<main class="profile-container">
+  <section class="profile">
+    <img src="{{ profile.profile_image_url }}"
+         alt="Profile image">
+
+    <div class="profile-fields">
+      <h2 class="display-name">{{ profile.display_name|default:profile.username }}</h2>
+
+      <div class="stats">
         <div>
-        <p>Join Date: {{profile.join_date}}</p>
-        <p>b {{profile.bio_text}}</p>
+          <strong>TBD</strong>
+          <small>posts</small>
         </div>
-    </article>
+        <div>
+          <strong>TBD</strong>
+          <small>followers</small>
+        </div>
+        <div>
+          <strong>TBD</strong>
+          <small>following</small>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BIO -->
+  <ul class="bio">
+        <li>{{ profile.bio_text }}</li>
+        <li>Joined: {{profile.join_date}}</li>
+  </ul>
+
+  <!-- POSTS -->
+  <h3 class="section-title">Posts</h3>
+  <p>No Posts</p>
 </main>
-    <p>Posts: No Posts</p>
 {% endblock %}
