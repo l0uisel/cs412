@@ -14,21 +14,21 @@ import random
 
 # Create your views here.
 class ProfileListView(ListView):
-    """Define a viw class to show all blog Articles."""
+    """Define a viw class to show all profiles."""
 
     # model name and template you want to use
     model = Profile
-    template_name = "blog/show_all_profiles.html"
-    # variable within html page, contain many article instances
-    context_object_name = "articles"
+    template_name = "profile/show_all_profiles.html"
+    # variable within html page, contain many profile instances
+    context_object_name = "profiles"
 
 
-# class ArticleView(DetailView):
-#     """Display a single article"""
+class ProfileDetailView(DetailView):
+    """Display a single profile"""
 
-#     model = Article
-#     template_name = "blog/article.html"
-#     context_object_name = "article"
+    model = Profile
+    template_name = "profile/show_profile.html"
+    context_object_name = "profile"
 
 
 # class RandomArticleView(DetailView):

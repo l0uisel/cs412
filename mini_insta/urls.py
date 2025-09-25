@@ -6,15 +6,14 @@
 from django.urls import path  # from django urls library
 from django.conf import settings  # include installed apps
 from .views import (
-    ShowAllView,
-    ArticleView,
-    RandomArticleView,
+    ProfileListView,
+    ProfileDetailView,
 )  # from . = local directory
 
 # URL patterns specific to the restaurant app:
 # Variable names django looks for
 urlpatterns = [
-    path("", ShowAllView.as_view(), name="show_all_profiles"),
+    path("", ProfileListView.as_view(), name="show_all_profiles"),
     # display signle article by primary key
-    path("profile/<int:pk>", ProfileView.as_view(), name="profile"),
+    path("profile/<int:pk>", ProfileDetailView.as_view(), name="show_profile"),
 ]

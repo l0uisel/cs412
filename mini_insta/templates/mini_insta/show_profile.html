@@ -1,0 +1,23 @@
+<!-- mini_insta/profile.html-->
+{%extends 'mini_insta/base.html'%}
+
+{% block content %}
+<h1>MiniInsta: {{profile.username}}</h1>
+
+<!-- {{articles}} -->
+
+<main class="grid-container">
+    <img src="{{profile.profile_image_url}}" alt = "image">
+    <hr>
+    <!-- followers, following, posts made -->
+    <article>
+        <div>
+        <h2>{{profile.display_name}}</h2>
+        <p>{{profile.join_date}}</p>
+        <h3>by {{profile.bio_text}}</h3>
+        </div>
+    </article>
+
+    <p>Posts: No Posts</p>
+</main>
+{% endblock %}
