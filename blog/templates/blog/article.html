@@ -8,14 +8,22 @@
 
 <main class="grid-container">
     <!-- Scriplet for loop -->
-    <article>
+    <article class="featured">
+        <img src="{{article.image_url}}" alt = "image">
         <div>
         <h2>{{article.title}}</h2>
-        <h3>by {{article.author}}</h3>
+        <h3>by {{article.author}} at {{article.published}}</h3>
         <p> {{article.text}}</p>
         </div>
-        <img src="{{article.image_url}}" alt = "image">
         <hr>
     </article>
+
+        <!-- DIsplay comments on article-->
+        {% for comment in article.get_all_comments %}
+        <div>
+            <strong>by {{comment.author}} at {{comment.published}}</strong>
+            <p> {{comment.text}} </p>
+        </div>
+        {% endfor %}
 </main>
 {% endblock %}
