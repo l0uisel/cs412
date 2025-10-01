@@ -8,7 +8,7 @@ from django.views.generic import (
     ListView,
     DetailView,
 )  # look at all instances of model (detail = single instance)
-from .models import Profile
+from .models import Profile, Post
 
 
 # Create your views here.
@@ -28,3 +28,11 @@ class ProfileDetailView(DetailView):
     model = Profile
     template_name = "mini_insta/show_profile.html"
     context_object_name = "profile"
+
+
+class PostDetailView(DetailView):
+    """Display a single post"""
+
+    model = Post
+    template_name = "mini_insta/show_post.html"
+    context_object_name = "post"

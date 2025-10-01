@@ -8,6 +8,7 @@ from django.conf import settings  # include installed apps
 from .views import (
     ProfileListView,
     ProfileDetailView,
+    PostDetailView,
 )  # from . = local directory
 
 # URL patterns specific to the restaurant app:
@@ -16,4 +17,5 @@ urlpatterns = [
     path("", ProfileListView.as_view(), name="show_all_profiles"),
     # display signle article by primary key
     path("profile/<int:pk>", ProfileDetailView.as_view(), name="show_profile"),
+    path("post/<int:pk>", PostDetailView.as_view(), name="post-detail"),
 ]

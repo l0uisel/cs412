@@ -1,0 +1,22 @@
+<!-- File: mini_insta/templates/mini_insta/show_post.html-->
+<!-- Author: Louise Lee, llouise@bu.edu, 09/30/2025 -->
+<!-- Description: Displays a single post from a profile -->
+
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+<h1>Post: @{{ post.profile.username }}</h1>
+
+<h3>Photos</h3>
+<ul class="photos-grid">
+  {% for photo in post.get_all_photos %}
+    <li class="photo-card"><img src="{{ photo.image_url }}" alt="Post photo"></li>
+  {% empty %}
+    <li class="photo-card"><img src="https://media.istockphoto.com/id/1472933890/vector/no-image-vector-symbol-missing-available-icon-no-gallery-for-this-moment-placeholder.jpg?s=612x612&w=0&k=20&c=Rdn-lecwAj8ciQEccm0Ep2RX50FCuUJOaEM8qQjiLL0=" alt="No post image"></li>
+  {% endfor %}
+</ul>
+
+<p><strong>Liked by TBA </strong> and TBA others</p>
+<p><h3><strong>@{{ post.profile.username }}</h3></strong>{{post.caption}}</p>
+<p><strong>Timestamp:</strong> {{post.timestamp}}</p>
+{% endblock %}

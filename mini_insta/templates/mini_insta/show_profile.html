@@ -40,7 +40,21 @@
   </ul>
 
   <!-- POSTS -->
-  <h3 class="section-title">Posts</h3>
-  <p>No Posts</p>
+  <ul class="posts-grid">
+    {% for post in profile.get_all_posts %}
+      <li class="post-card">
+        <a href="{% url 'post-detail' post.pk %}">
+          {% for photo in post.get_all_photos|slice:":1" %}
+            <img src="{{ photo.image_url }}" alt="Post image">
+          {% empty %}
+            <img src="https://media.istockphoto.com/id/1472933890/vector/no-image-vector-symbol-missing-available-icon-no-gallery-for-this-moment-placeholder.jpg?s=612x612&w=0&k=20&c=Rdn-lecwAj8ciQEccm0Ep2RX50FCuUJOaEM8qQjiLL0=" alt="No post image">
+          {% endfor %}
+        </a>
+      </li>
+    {% empty %}
+      <li class="post-card">No posts yet.</li>
+    {% endfor %}
+  </ul>
+
 </main>
 {% endblock %}
