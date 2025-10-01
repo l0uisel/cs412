@@ -154,12 +154,12 @@ a:hover {
 }
 
 .post-card{
-  aspect-ratio:1 / 1;     /* square */
+  aspect-ratio:1 / 1;
   overflow:hidden; 
   border-radius:8px;
 }
 
-.post-card a{             /* make the link fill the card */
+.post-card a{ 
   display:block;
   width:100%; height:100%;
 }
