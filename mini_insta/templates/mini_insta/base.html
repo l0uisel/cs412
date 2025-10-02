@@ -22,6 +22,12 @@
       <a href="{% url 'show_profile' profile.pk %}">
         <img class = "footer-pfp" src="{{ profile.profile_image_url }}" alt="Profile image">
       </a>
+
+      <!-- Add post button only visible on the person's profile -->
+      <a href="{% url 'create_post' profile.pk %}" class="footer-add-post">
+        ➕ Add Post
+      </a>
+
       {% endif %}
     </div>
 

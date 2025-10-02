@@ -1,0 +1,23 @@
+<!-- File: mini_insta/templates/mini_insta/create_post_form.html-->
+<!-- Author: Louise Lee, llouise@bu.edu, 10/01/2025 -->
+<!-- Description: Form display for creating a post -->
+
+{%extends 'mini_insta/base.html'%}
+
+{% block content %}
+<h1>@ {{profile.username}}: Create A Post</h1>
+
+<!-- Display HTML form -->
+<form method="POST">
+    {% csrf_token %}
+    <table>
+        {{form.as_table}}
+    </table>
+
+    <input type="submit" name="submit" value="Submit" class="btn">
+    <a href="{% url 'show_profile' profile.pk %}" class="btn">Cancel</a>
+    
+</form>
+
+
+{% endblock %}

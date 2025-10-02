@@ -7,7 +7,6 @@
 {% block content %}
 <h1>Post: @{{ post.profile.username }}</h1>
 
-<h3>Photos</h3>
 <ul class="photos-grid">
   {% for photo in post.get_all_photos %}
     <li class="photo-card"><img src="{{ photo.image_url }}" alt="Post photo"></li>
