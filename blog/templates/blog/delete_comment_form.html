@@ -1,0 +1,22 @@
+<!-- blog/delete_comment_form.html-->
+{%extends 'blog/base.html'%}
+
+{% block content %}
+<h1>Are you sure you want to delete this comment?</h1>
+<p>
+    {{comment}}
+</p>
+
+<!-- Display HTML form for delete request -->
+<form method="POST">
+    {% csrf_token %}
+    <input type="submit" value="Delete">
+
+    <form action="{% url 'article' comment.article.pk %}" method="POST">
+        {% csrf_token %}
+        <input type="submit" value="Cancel">
+    </form>
+
+</form>
+
+{% endblock %}

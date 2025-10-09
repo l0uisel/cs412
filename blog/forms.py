@@ -13,7 +13,18 @@ class CreateArticleForm(forms.ModelForm):
         """Associate form w model from db"""
 
         model = Article
-        fields = ["author", "title", "text", "image_url"]
+        # fields = ["author", "title", "text", "image_url"]
+        fields = ["author", "title", "text", "image_file"]
+
+
+class UpdateArticleForm(forms.ModelForm):
+    """Handle update to article"""
+
+    class Meta:
+        """Associate with model" in db"""
+
+        model = Article
+        fields = ["title", "text"]  # fields allowing update
 
 
 class CreateCommentForm(forms.ModelForm):

@@ -42,5 +42,9 @@ urlpatterns = [
     path(
         "mini_insta/", include("mini_insta.urls")
     ),  # refer anything with spring mini_insta/ to mini_insta app
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]
+
+# configuration settings
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # Serve static files during development

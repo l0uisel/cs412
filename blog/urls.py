@@ -1,7 +1,7 @@
 # file: blog/urls.py
 
 from django.urls import path
-from .views import *  # ShowAllView, ArticleView, RandomArticleView, CreateArticleView
+from .views import *  # ShowAllView, ArticleView, RandomArticleView, CreateArticleView...
 
 urlpatterns = [
     path("", RandomArticleView.as_view(), name="random"),
@@ -14,4 +14,10 @@ urlpatterns = [
         CreateCommentView.as_view(),
         name="create_comment",
     ),
+    path(
+        "article/<int:pk>/delete",
+        DeleteCommentView.as_view(),
+        name="delete_comment",
+    ),
+    path("article/<int:pk>/update", UpdateArticleView.as_view(), name="update_article"),
 ]

@@ -5,7 +5,8 @@
 <h1>Create new Article</h1>
 
 <!-- Display HTML form -->
-<form action="{%url 'create_article' %}" method="POST">
+<form action="{%url 'create_article' %}" method="POST"
+    enctype="multipart/form-data">
     {% csrf_token %}
     <table>
         {{form.as_table}}

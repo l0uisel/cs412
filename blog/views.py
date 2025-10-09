@@ -5,9 +5,15 @@ from django.views.generic import (
     ListView,
     DetailView,
     CreateView,
+    UpdateView,
+    DeleteView,
 )  # look at all instances of model (detail = single instance)
-from .models import Article
-from .forms import CreateArticleForm, CreateCommentForm
+from .models import Article, Comment
+from .forms import (
+    CreateArticleForm,
+    CreateCommentForm,
+    UpdateArticleForm,
+)
 from django.urls import reverse
 import random
 
@@ -55,6 +61,13 @@ class CreateArticleView(CreateView):
     form_class = CreateArticleForm
     template_name = "blog/create_article_form.html"
 
+    def form_valid(self, form):
+        """Override the default method to add some debug info"""
+        # print out form data
+        print(f"CreateArticleView.form_valid(): {form.clenaed_data}")
+        # delegate work to superclass
+        return super().form_valid(form)
+
 
 class CreateCommentView(CreateView):
     """View to handle creation of a new comment on an article"""
@@ -82,3 +95,27 @@ class CreateCommentView(CreateView):
 
         # delefate work to superclass form_valid method
         return super().form_valid(form)
+
+
+class UpdateArticleView(UpdateView):
+    """View class to handle update of article based on PK"""
+
+    model = Article
+    form_class = UpdateArticleForm
+    template_name = "blog/update_article_form.html"
+
+
+class DeleteCommentView(DeleteView):
+    """View class to handle comment deletion for Article"""
+
+    model = Comment
+    template_name = "blog/delete_comment_form.html"
+
+    def get_success_url(self):
+        """Return URL ot redirect after successful delete"""
+        # find PK for Comment
+        pk = self.kwargs["pk"]
+        comment = Comment.objects.get(pk=pk)
+
+        article = comment.article
+        return reverse("article", kwargs={"pk": article.pk})
