@@ -9,9 +9,19 @@
 
 <ul class="photos-grid">
   {% for photo in post.get_all_photos %}
-    <li class="photo-card"><img src="{{ photo.image_url }}" alt="Post photo"></li>
+    {% with url=photo.get_image_url %}
+      <li class="photo-card">
+        {% if url %}
+          <img src="{{ url }}" alt="Post photo">
+        {% else %}
+          <img src="https://media.istockphoto.com/id/1472933890/vector/no-image-vector-symbol-missing-available-icon-no-gallery-for-this-moment-placeholder.jpg?s=612x612&w=0&k=20&c=Rdn-lecwAj8ciQEccm0Ep2RX50FCuUJOaEM8qQjiLL0=" alt="No post image">
+        {% endif %}
+      </li>
+    {% endwith %}
   {% empty %}
-    <li class="photo-card"><img src="https://media.istockphoto.com/id/1472933890/vector/no-image-vector-symbol-missing-available-icon-no-gallery-for-this-moment-placeholder.jpg?s=612x612&w=0&k=20&c=Rdn-lecwAj8ciQEccm0Ep2RX50FCuUJOaEM8qQjiLL0=" alt="No post image"></li>
+    <li class="photo-card">
+      <img src="https://media.istockphoto.com/id/1472933890/vector/no-image-vector-symbol-missing-available-icon-no-gallery-for-this-moment-placeholder.jpg?s=612x612&w=0&k=20&c=Rdn-lecwAj8ciQEccm0Ep2RX50FCuUJOaEM8qQjiLL0=" alt="No post image">
+    </li>
   {% endfor %}
 </ul>
 

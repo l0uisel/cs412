@@ -16,6 +16,7 @@ Shows all profile in a grid linking to individual profiles -->
         aria-label="{{ profile.username }}">
         <img src="{{ profile.profile_image_url }}"
             alt="Profile image">
+        <span class="username">@{{ profile.username }}, {{profile.display_name}}</span>
     </a>
     {% endfor %}
 </main>

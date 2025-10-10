@@ -8,9 +8,10 @@ from django.views.generic import (
     ListView,
     DetailView,
     CreateView,
+    UpdateView,
 )  # look at all instances of model (detail = single instance)
 from .models import Profile, Post, Photo
-from .forms import CreatePostForm
+from .forms import CreatePostForm, UpdateProfileForm
 from django.urls import reverse
 
 
@@ -64,12 +65,19 @@ class CreatePostView(CreateView):
 
         response = super().form_valid(form)
 
-        # Create the first Photo from the extra form field
-        image_url = form.cleaned_data.get("image_url")
-        if not image_url:  # empty -> fallback
-            image_url = "https://media.istockphoto.com/id/1472933890/vector/no-image-vector-symbol-missing-available-icon-no-gallery-for-this-moment-placeholder.jpg?s=612x612&w=0&k=20&c=Rdn-lecwAj8ciQEccm0Ep2RX50FCuUJOaEM8qQjiLL0="
+        # Pull multiple uploaded files from <input name="files" multiple>
+        files = self.request.FILES.getlist("files")
 
-        Photo.objects.create(post=self.object, image_url=image_url)
+        # Create a Photo for each uploaded file
+        for f in files:
+            Photo.objects.create(post=self.object, image_file=f)
+
+        if not files:
+            Photo.objects.create(
+                post=self.object,
+                image_url="https://media.istockphoto.com/id/1472933890/vector/no-image-vector-symbol-missing-available-icon-no-gallery-for-this-moment-placeholder.jpg?s=612x612&w=0&k=20&c=Rdn-lecwAj8ciQEccm0Ep2RX50FCuUJOaEM8qQjiLL0=",
+            )
+
         return response
 
     def get_success_url(self):
@@ -78,3 +86,16 @@ class CreatePostView(CreateView):
         # return reverse("show_all")
         pk = self.kwargs["pk"]
         return reverse("show_profile", kwargs={"pk": pk})
+
+
+class UpdateProfileView(UpdateView):
+    """View class to handle update of post based on PK"""
+
+    model = Profile
+    template_name = "mini_insta/update_profile_form.html"
+    form_class = UpdateProfileForm
+    context_object_name = "profile"
+
+    def get_success_url(self):
+        # Redirect back to the updated profile page
+        return self.object.get_absolute_url()

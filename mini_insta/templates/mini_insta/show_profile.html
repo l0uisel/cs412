@@ -36,8 +36,10 @@
 
   <!-- BIO -->
   <ul class="bio">
-        <li>{{ profile.bio_text }}</li>
+        <li>Bio: {{ profile.bio_text }}</li>
         <li>Joined: {{profile.join_date}}</li>
+        <a href="{% url 'update_profile' profile.pk %}" class="btn">Update Profile</a>
+
   </ul>
 
   <!-- POSTS -->
@@ -46,16 +48,21 @@
       <li class="post-card">
         <a href="{% url 'post_detail' post.pk %}">
           {% for photo in post.get_all_photos|slice:":1" %}
-            <img src="{{ photo.image_url }}" alt="Post image">
+            {% with url=photo.get_image_url %}
+              {% if url %}
+                <img src="{{ url }}" alt="Post image">
+              {% else %}
+                <div class="no-image">No image</div>
+              {% endif %}
+            {% endwith %}
           {% empty %}
-            <img src="https://media.istockphoto.com/id/1472933890/vector/no-image-vector-symbol-missing-available-icon-no-gallery-for-this-moment-placeholder.jpg?s=612x612&w=0&k=20&c=Rdn-lecwAj8ciQEccm0Ep2RX50FCuUJOaEM8qQjiLL0=" alt="No post image">
+            <div class="no-image">No image</div>
           {% endfor %}
         </a>
       </li>
-    {% empty %}
-      <li class="post-card">No posts yet.</li>
     {% endfor %}
   </ul>
+  
 
 </main>
 {% endblock %}

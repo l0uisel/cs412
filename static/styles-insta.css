@@ -37,53 +37,37 @@ header {
   }
   
   /* each tile is a square, with rounded corners + shadow */
+  .profiles-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(160px,1fr));
+    gap:16px;
+    list-style:none;
+    margin:0; padding:0;
+  }
+  
   .profile-card{
-    border-radius: 14px;
-    overflow: hidden;
-    background: #fff;
-    box-shadow: var(--shadow);
-    transition: transform .18s ease, box-shadow .18s ease;
+    display:block;
+    text-align:center;
+    text-decoration:none;
+    color:inherit;
   }
   
-  .profile-card:hover{
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 10px 24px rgba(15, 23, 42, .12);
-  }
-  
-  /* the image fills the square and is cropped, not stretched */
   .profile-card img{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;              /* <— crops to square */
-    display: block;
+    width:100%;
+    aspect-ratio:1/1;
+    object-fit:cover;
+    border-radius:12px;
+    display:block;
+    margin-bottom:8px;
   }
   
-/* ---------- DETAIL PAGE (show_profile) ---------- */
-body{ font-size: 18px; }
-
-.profile-container{
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px 108px;
-}
-
-.profile{
-  display: grid;
-  grid-template-columns: 220px 1fr; /* avatar column bigger */
-  gap: 36px;                        /* wider spacing */
-  align-items: center;
-  margin: 20px 0 24px;
-}
-
-.profile img{
-  width: 220px; height: 220px;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 6px solid #fff;
-  box-shadow: var(--shadow);
-  outline: 4px solid var(--accent);
-  outline-offset: 3px;
-}
+  .profile-card .username{
+    display:block;
+    font-weight:600;
+    font-size:0.95rem;
+    opacity:.85;
+  }
+  
 
 /* stats row (posts/followers/following) */
 .stats{
@@ -200,6 +184,34 @@ a:hover {
 .btn:hover {
   background-color: #c0bdf1;
 }
+
+.button-container {
+  display: flex;
+  gap: 1rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 600px;
+}
+
+input[type="text"],
+textarea,
+input[type="url"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #f6f3ff;
+}
+
+.button-container {
+  display: flex;
+  gap: 1rem;
+}
+
 
 /* responsive styles: adapt to smaller screen sizes */
 @media screen and (max-width: 980px) {
