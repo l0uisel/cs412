@@ -212,6 +212,35 @@ input[type="url"] {
   gap: 1rem;
 }
 
+/* Outer decorative ring */
+.avatar-ring{
+  width: 176px;                 /* tweak size */
+  aspect-ratio: 1 / 1;
+  padding: 10px;                /* ring thickness */
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #cbb5ff, #a78bfa 70%, #9a84f7);
+  box-shadow: 0 8px 24px rgba(0,0,0,.12);
+  display: grid;
+  place-items: center;
+}
+
+/* Actual circular mask that clips the image */
+.avatar{
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;             /* <-- key: clip to circle */
+  background: #fff;             /* white inner edge */
+  box-shadow: 0 0 0 3px #fff;   /* subtle inner ring */
+}
+
+/* The photo fills the mask and is cropped nicely */
+.avatar img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;            /* keeps subject centered/cropped */
+  display: block;               /* removes inline-gap */
+}
 
 /* responsive styles: adapt to smaller screen sizes */
 @media screen and (max-width: 980px) {

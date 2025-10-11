@@ -10,8 +10,9 @@
 
 <main class="profile-container">
   <section class="profile">
-    <img src="{{ profile.profile_image_url }}"
-         alt="Profile image">
+    <div class="avatar-ring">
+      <img class="avatar" src="{{ profile.profile_image_url }}" alt="Profile image">
+    </div>
 
     <div class="profile-fields">
       <h2 class="display-name">{{ profile.display_name|default:profile.username }}</h2>
@@ -46,7 +47,7 @@
   <ul class="posts-grid">
     {% for post in profile.get_all_posts %}
       <li class="post-card">
-        <a href="{% url 'post_detail' post.pk %}">
+        <a href="{% url 'show_post' post.pk %}">
           {% for photo in post.get_all_photos|slice:":1" %}
             {% with url=photo.get_image_url %}
               {% if url %}
