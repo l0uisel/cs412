@@ -9,6 +9,7 @@ from django.views.generic import (
     DetailView,
     CreateView,
     UpdateView,
+    DeleteView,
 )  # look at all instances of model (detail = single instance)
 from .models import Profile, Post, Photo
 from .forms import CreatePostForm, UpdateProfileForm
@@ -99,3 +100,37 @@ class UpdateProfileView(UpdateView):
     def get_success_url(self):
         # Redirect back to the updated profile page
         return self.object.get_absolute_url()
+
+
+class DeletePostView(DeleteView):
+    """Handle deletion of a Post"""
+
+    model = Post
+    template_name = "mini_insta/delete_post_form.html"
+    context_object_name = "post"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        post = self.get_object()
+        context["profile"] = post.profile
+        return context
+
+    def get_success_url(self):
+        """Redirect to the profile page after successful delete"""
+        post = self.get_object()
+        pk = post.profile.pk
+        return reverse("show_profile", kwargs={"pk": pk})
+
+
+class UpdatePostView(UpdateView):
+    """Handle updating the caption of an existing post"""
+
+    model = Post
+    form_class = CreatePostForm
+    template_name = "mini_insta/update_post_form.html"
+    context_object_name = "post"
+
+    def get_success_url(self):
+        """Redirect to the post page after update"""
+        pk = self.object.pk
+        return reverse("show_post", kwargs={"pk": pk})

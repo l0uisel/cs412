@@ -7,6 +7,11 @@
 {% block content %}
 <h1>Post: @{{ post.profile.username }}</h1>
 
+<p>
+  <a href="{% url 'update_post' post.pk %}" class="btn">Update</a>
+  <a href="{% url 'delete_post' post.pk %}" class="btn delete">Delete</a>
+</p>
+
 <ul class="photos-grid">
   {% for photo in post.get_all_photos %}
     {% with url=photo.get_image_url %}
