@@ -1,0 +1,20 @@
+<!-- File: mini_insta/templates/mini_insta/show_followers.html-->
+<!-- Author: Louise Lee, llouise@bu.edu, 10/16/2025 -->
+<!-- Description: Reusable, call accessor methods on profile to
+retrieve the follower list of Profiles to display. -->
+{% extends 'mini_insta/base.html' %}
+{% block content %}
+<h1>@{{ profile.username }} followers:</h1>
+
+<ul class="profile-list">
+  {% for p in profile.get_followers %}
+    <li>
+      <a href="{% url 'show_profile' p.pk %}">
+        @{{ p.username }}
+      </a>
+    </li>
+  {% endfor %}
+</ul>
+
+<p><a href="{% url 'show_profile' profile.pk %}">Back to profile</a></p>
+{% endblock %}

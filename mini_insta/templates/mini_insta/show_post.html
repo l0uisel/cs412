@@ -30,7 +30,24 @@
   {% endfor %}
 </ul>
 
-<p><strong>Liked by TBA </strong> and TBA others</p>
+<h3><strong>{{ post.get_num_likes }}</strong> likes</h3>
+
 <p><h3><strong>@{{ post.profile.username }}</h3></strong>{{post.caption}}</p>
 <p><strong>Timestamp:</strong> {{post.timestamp}}</p>
+
+
+<h3>Comments</h3>
+<ul>
+  {% for c in post.get_all_comments %}
+    <li>
+      <strong>{{ c.profile.display_name|default:c.profile.username }}</strong>
+      <small>· {{ c.timestamp }}</small>
+      <div>{{ c.text }}</div>
+      <br>
+    </li>
+  {% empty %}
+    <li>No comments yet.</li>
+  {% endfor %}
+</ul>
+
 {% endblock %}

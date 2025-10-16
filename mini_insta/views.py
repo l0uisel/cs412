@@ -134,3 +134,17 @@ class UpdatePostView(UpdateView):
         """Redirect to the post page after update"""
         pk = self.object.pk
         return reverse("show_post", kwargs={"pk": pk})
+
+
+class ShowFollowersDetailView(DetailView):
+    """Display followers of profile"""
+
+    model = Profile
+    template_name = "mini_insta/show_followers.html"
+
+
+class ShowFollowingDetailView(DetailView):
+    """Display a profile's following"""
+
+    model = Profile
+    template_name = "mini_insta/show_following.html"

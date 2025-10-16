@@ -22,19 +22,24 @@
       <div class="stats">
         <div>
             <!-- Stat placeholders -->
-          <strong>TBD</strong>
-          <small>posts</small>
-        </div>
-        <div>
-          <strong>TBD</strong>
-          <small>followers</small>
-        </div>
-        <div>
-          <strong>TBD</strong>
-          <small>following</small>
-        </div>
-      </div>
-    </div>
+          <div class="stats">
+            <div>
+              <strong>{{ profile.get_num_posts }}</strong>
+              <small>posts</small>
+            </div>
+            <div>
+              <a href="{% url 'show_followers' profile.pk %}">
+                <strong>{{ profile.get_num_followers }}</strong>
+                <small>followers</small>
+              </a>
+            </div>
+            <div>
+              <a href="{% url 'show_following' profile.pk %}">
+                <strong>{{ profile.get_num_following }}</strong>
+                <small>following</small>
+              </a>
+            </div>
+          </div>
   </section>
 
   <!-- BIO -->
