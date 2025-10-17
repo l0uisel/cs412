@@ -1,0 +1,16 @@
+<!-- File: mini_insta/templates/mini_insta/search.html-->
+<!-- Author: Louise Lee, llouise@bu.edu, 10/16/2025 -->
+<!-- Description: Reusable, call accessor methods on profile to
+search through users profile and posts -->
+
+{% extends 'mini_insta/base.html' %}
+{% block content %}
+<h1>Search</h1>
+
+<form action="{% url 'search' profile.pk %}" method="get" class="search-form">
+  <label for="q">Search Profiles & Posts</label>
+  <input type="text" id="q" name="q" placeholder="What are you searching for?">
+  <button type="submit" class="btn">Search</button>
+</form>
+
+{% endblock %}

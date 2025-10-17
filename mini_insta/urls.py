@@ -16,6 +16,7 @@ from .views import (
     ShowFollowersDetailView,
     ShowFollowingDetailView,
     PostFeedListView,
+    SearchView,
 )  # from . = local directory
 
 # URL patterns specific to the restaurant app:
@@ -40,4 +41,5 @@ urlpatterns = [
         name="show_following",
     ),
     path("profile/<int:pk>/feed", PostFeedListView.as_view(), name="show_feed"),
+    path("profile/<int:pk>/search", SearchView.as_view(), name="search"),
 ]

@@ -3,7 +3,7 @@
 # Description: Defines view function, handles rendering of the different pages by using
 # context data
 
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.views.generic import (
     ListView,
     DetailView,
@@ -14,6 +14,7 @@ from django.views.generic import (
 from .models import Profile, Post, Photo
 from .forms import CreatePostForm, UpdateProfileForm
 from django.urls import reverse
+from django.db.models import Q
 
 
 # Create your views here.
@@ -151,7 +152,7 @@ class ShowFollowingDetailView(DetailView):
 
 
 class PostFeedListView(ListView):
-    """"""
+    """Display profile's feed"""
 
     template_name = "mini_insta/show_feed.html"
     context_object_name = "posts"
@@ -163,4 +164,38 @@ class PostFeedListView(ListView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx["profile"] = self.profile
+        return ctx
+
+
+class SearchView(ListView):
+    """Find query in and display search results"""
+
+    template_name = "mini_insta/search_results.html"
+    context_object_name = "posts"
+
+    def dispatch(self, request, *args, **kwargs):
+        self.profile = get_object_or_404(Profile, pk=self.kwargs["pk"])
+        self.query = request.GET.get("q", "").strip()
+        if not self.query:
+            return render(request, "mini_insta/search.html", {"profile": self.profile})
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        if not self.query:
+            return Post.objects.none()
+        return (
+            Post.objects.filter(caption__icontains=self.query)
+            .select_related("profile")
+            .order_by("-timestamp")
+        )
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["profile"] = self.profile
+        ctx["query"] = self.query
+        ctx["profiles"] = Profile.objects.filter(
+            Q(username__icontains=self.query)
+            | Q(display_name__icontains=self.query)
+            | Q(bio_text__icontains=self.query)
+        ).order_by("username")
         return ctx

@@ -1,0 +1,56 @@
+<!-- File: mini_insta/templates/mini_insta/search_results.html-->
+<!-- Author: Louise Lee, llouise@bu.edu, 10/17/2025 -->
+<!-- Description: Reusable, call accessor methods on profile to
+retrieve a user's query -->
+
+{% extends 'mini_insta/base.html' %}
+{% block content %}
+
+<div class="search-page">
+  <h1>Search Results for “{{ query }}”</h1>
+
+  <p>
+    <a href="{% url 'search' profile.pk %}">New Search</a> |
+  </p>
+
+  <!-- Profiles -->
+  <h2>Profiles</h2>
+  <ul class="profiles-grid">
+    {% for p in profiles %}
+      <li>
+        <a href="{% url 'show_profile' p.pk %}" class="profile-card">
+          <img src="{{ p.profile_image_url|default:'/static/img/avatar-default.png' }}" alt="@{{ p.username }}">
+          <span class="username">@{{ p.username }}</span>
+        </a>
+      </li>
+    {% empty %}
+      <li>No matching profiles.</li>
+    {% endfor %}
+  </ul>
+
+  <!-- Posts (show like show_profile) -->
+  <h2>Posts</h2>
+  <ul class="posts-grid">
+    {% for post in posts %}
+      <li class="post-card">
+        <a href="{% url 'show_post' post.pk %}">
+          {% for photo in post.get_all_photos|slice:":1" %}
+            {% with url=photo.get_image_url %}
+              {% if url %}
+                <img src="{{ url }}" alt="Post image">
+              {% else %}
+                <img src="https://media.istockphoto.com/id/1472933890/vector/no-image-vector-symbol-missing-available-icon-no-gallery-for-this-moment-placeholder.jpg?s=612x612&w=0&k=20&c=Rdn-lecwAj8ciQEccm0Ep2RX50FCuUJOaEM8qQjiLL0=" alt="No post image">
+              {% endif %}
+            {% endwith %}
+          {% empty %}
+            <img src="https://media.istockphoto.com/id/1472933890/vector/no-image-vector-symbol-missing-available-icon-no-gallery-for-this-moment-placeholder.jpg?s=612x612&w=0&k=20&c=Rdn-lecwAj8ciQEccm0Ep2RX50FCuUJOaEM8qQjiLL0=" alt="No post image">
+          {% endfor %}
+        </a>
+      </li>
+    {% empty %}
+      <li>No matching posts.</li>
+    {% endfor %}
+  </ul>
+</div>
+
+{% endblock %}
