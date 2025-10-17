@@ -34,29 +34,43 @@ class Profile(models.Model):
 
     # Following accessor methods
     def get_followers(self):
-        """Return Follower objects for profile"""
+        """Return Follow objects for profile"""
         followers = Follow.objects.select_related("follower_profile").filter(
             profile=self
         )
         return [p.follower_profile for p in followers]
 
     def get_num_followers(self):
+        """Return Follower (followers) objects for profile"""
         return Follow.objects.filter(profile=self).count()
 
     def get_following(self):
+        """Return Follow objects for profile"""
         followers = Follow.objects.select_related("profile").filter(
             follower_profile=self
         )
         return [p.profile for p in followers]  # list[Profile]
 
     def get_num_following(self):
+        """Return Follow (following) objects for profile"""
         return Follow.objects.filter(follower_profile=self).count()
 
     def get_num_posts(self):
+        """Return Post objects for profile"""
         return Post.objects.filter(profile=self).count()
 
     def __str__(self):
         return self.username
+
+    # models.py (inside Profile)
+    def get_post_feed(self):
+        """Return Post objects (feed) for profile"""
+        from .models import Follow, Post
+
+        followed_ids = Follow.objects.filter(follower_profile=self).values_list(
+            "profile_id", flat=True
+        )
+        return Post.objects.filter(profile_id__in=followed_ids).order_by("-timestamp")
 
 
 class Post(models.Model):

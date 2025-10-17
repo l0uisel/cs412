@@ -1,0 +1,38 @@
+<!-- File: mini_insta/templates/mini_insta/show_feed.html-->
+<!-- Author: Louise Lee, llouise@bu.edu, 10/16/2025 -->
+<!-- Description: Reusable, call accessor methods on profile to
+retrieve a user's feed -->
+
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+<h1>Feed for @{{ profile.username }}</h1>
+<p><a href="{% url 'show_profile' profile.pk %}">Back to Profile</a></p>
+
+<ul>
+  {% for post in posts %}
+    <li>
+      <p><a href="{% url 'show_profile' post.profile.pk %}">@{{ post.profile.username }}</a> · {{ post.timestamp }}</p>
+
+      {% for photo in post.get_all_photos|slice:":1" %}
+        <img src="{{ photo.get_image_url }}" alt="Post image" style="max-width:100%;height:auto;">
+      {% endfor %}
+
+      <p><strong>@{{ post.profile.username }}</strong> {{ post.caption }}</p>
+
+      <p>
+        {% with n=post.get_likes|length %}
+          {% if n > 0 %}
+            Liked by {{ n }}
+          {% else %}
+            <strong>0 likes</strong>
+          {% endif %}
+        {% endwith %}
+        · {% with m=post.get_all_comments|length %}{{ m }} comments{% endwith %}
+      </p>
+    </li>
+  {% empty %}
+    <li>No posts yet.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

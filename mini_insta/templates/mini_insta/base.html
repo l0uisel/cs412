@@ -17,15 +17,18 @@
 
     <!-- Footer with show_all_profile again and profile image if on show_profile-->
     <div class = footer>
-      <a href="{% url 'show_all_profiles' %}"> Show All Profiles</a>
+      <a href="{% url 'show_all_profiles' %}"> | All Profiles </a>
       {% if profile %}
+      <a href="{% url 'show_feed' profile.pk %}" class="footer-home">
+        | 🏠 Feed |
+      </a>
       <a href="{% url 'show_profile' profile.pk %}">
         <img class = "footer-pfp" src="{{ profile.profile_image_url }}" alt="Profile image">
       </a>
 
       <!-- Add post button only visible on the person's profile -->
       <a href="{% url 'create_post' profile.pk %}" class="footer-add-post">
-        ➕ Add Post
+        | ➕ Add Post |
       </a>
 
       {% endif %}
