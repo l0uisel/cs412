@@ -7,7 +7,7 @@ search through users profile and posts -->
 {% block content %}
 <h1>Search</h1>
 
-<form action="{% url 'search' profile.pk %}" method="get" class="search-form">
+<form action="{% url 'search' %}" method="get" class="search-form">
   <label for="q">Search Profiles & Posts</label>
   <input type="text" id="q" name="q" placeholder="What are you searching for?">
   <button type="submit" class="btn">Search</button>

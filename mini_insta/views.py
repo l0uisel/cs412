@@ -15,6 +15,9 @@ from .models import Profile, Post, Photo
 from .forms import CreatePostForm, UpdateProfileForm
 from django.urls import reverse
 from django.db.models import Q
+from django.contrib.auth.mixins import LoginRequiredMixin  # for authentication
+from django.contrib.auth.forms import UserCreationForm  # for new User
+from django.contrib.auth.models import User  # Django user model
 
 
 # Create your views here.
@@ -26,6 +29,16 @@ class ProfileListView(ListView):
     template_name = "mini_insta/show_all_profiles.html"
     # variable within html page, contain many profile instances
     context_object_name = "profiles"
+
+    def dispatch(self, request, *args, **kwargs):
+        """Override the dispatch method to add debugging information."""
+
+        if request.user.is_authenticated:
+            print(f"ProfileListView.dispatch(): request.user={request.user}")
+        else:
+            print(f"ProfileListView.dispatch(): not logged in.")
+
+        return super().dispatch(request, *args, **kwargs)
 
 
 class ProfileDetailView(DetailView):
@@ -44,18 +57,23 @@ class PostDetailView(DetailView):
     context_object_name = "post"
 
 
-class CreatePostView(CreateView):
+class CreatePostView(LoginRequiredMixin, CreateView):
     """Handle creation of new post"""
 
     form_class = CreatePostForm
     template_name = "mini_insta/create_post_form.html"
 
+    def get_login_url(self):
+        """Return the URL for this app's login page"""
+        return reverse("login")
+
     # Provide profile in context so the template can show @username and
     # build a URL that includes profile.pk
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["profile"] = get_object_or_404(Profile, pk=self.kwargs["pk"])
-        return context
+        ctx = super().get_context_data(**kwargs)
+        profile = get_object_or_404(Profile, user=self.request.user)
+        ctx["profile"] = profile
+        return ctx
 
     def form_valid(self, form):
         """
@@ -63,7 +81,8 @@ class CreatePostView(CreateView):
         We need to add the foreign key (of Profile) to Post, then create the Photo
         """
         pk = self.kwargs["pk"]
-        form.instance.profile = Profile.objects.get(pk=pk)
+        profile = get_object_or_404(Profile, user=self.request.user)
+        form.instance.profile = profile
 
         response = super().form_valid(form)
 
@@ -86,17 +105,24 @@ class CreatePostView(CreateView):
         """Provide URL to redirect to after create new post"""
         # create and return URL
         # return reverse("show_all")
-        pk = self.kwargs["pk"]
+        pk = self.object.profile.pk
         return reverse("show_profile", kwargs={"pk": pk})
 
 
-class UpdateProfileView(UpdateView):
+class UpdateProfileView(LoginRequiredMixin, UpdateView):
     """View class to handle update of post based on PK"""
 
     model = Profile
     template_name = "mini_insta/update_profile_form.html"
     form_class = UpdateProfileForm
     context_object_name = "profile"
+
+    def get_login_url(self):
+        return reverse("login")
+
+    def get_object(self):
+        # Profile for the logged-in user
+        return get_object_or_404(Profile, user=self.request.user)
 
     def get_success_url(self):
         # Redirect back to the updated profile page
@@ -110,16 +136,20 @@ class DeletePostView(DeleteView):
     template_name = "mini_insta/delete_post_form.html"
     context_object_name = "post"
 
+    def get_login_url(self):
+        return reverse("login")
+
+    def get_queryset(self):
+        # Only allow deleting your own posts
+        return Post.objects.filter(profile__user=self.request.user)
+
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        post = self.get_object()
-        context["profile"] = post.profile
-        return context
+        ctx = super().get_context_data(**kwargs)
+        ctx["profile"] = self.object.profile
+        return ctx
 
     def get_success_url(self):
-        """Redirect to the profile page after successful delete"""
-        post = self.get_object()
-        pk = post.profile.pk
+        pk = self.object.profile.pk
         return reverse("show_profile", kwargs={"pk": pk})
 
 
@@ -130,6 +160,13 @@ class UpdatePostView(UpdateView):
     form_class = CreatePostForm
     template_name = "mini_insta/update_post_form.html"
     context_object_name = "post"
+
+    def get_login_url(self):
+        return reverse("login")
+
+    def get_queryset(self):
+        # Only allow updating your own posts
+        return Post.objects.filter(profile__user=self.request.user)
 
     def get_success_url(self):
         """Redirect to the post page after update"""
@@ -157,8 +194,11 @@ class PostFeedListView(ListView):
     template_name = "mini_insta/show_feed.html"
     context_object_name = "posts"
 
+    def get_login_url(self):
+        return reverse("login")
+
     def get_queryset(self):
-        self.profile = get_object_or_404(Profile, pk=self.kwargs["pk"])
+        self.profile = get_object_or_404(Profile, user=self.request.user)
         return self.profile.get_post_feed()
 
     def get_context_data(self, **kwargs):
@@ -173,8 +213,11 @@ class SearchView(ListView):
     template_name = "mini_insta/search_results.html"
     context_object_name = "posts"
 
+    def get_login_url(self):
+        return reverse("login")
+
     def dispatch(self, request, *args, **kwargs):
-        self.profile = get_object_or_404(Profile, pk=self.kwargs["pk"])
+        self.profile = get_object_or_404(Profile, self.request.user)
         self.query = request.GET.get("q", "").strip()
         if not self.query:
             return render(request, "mini_insta/search.html", {"profile": self.profile})

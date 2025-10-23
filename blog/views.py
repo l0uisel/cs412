@@ -15,6 +15,9 @@ from .forms import (
     UpdateArticleForm,
 )
 from django.urls import reverse
+from django.contrib.auth.mixins import LoginRequiredMixin  # for authentication
+from django.contrib.auth.forms import UserCreationForm  # for new User
+from django.contrib.auth.models import User  # Django user model
 import random
 
 
@@ -27,6 +30,16 @@ class ShowAllView(ListView):
     template_name = "blog/show_all.html"
     # variable within html page, contain many article instances
     context_object_name = "articles"
+
+    def dispatch(self, request, *args, **kwargs):
+        """Override the dispatch method to add debugging information."""
+
+        if request.user.is_authenticated:
+            print(f"ShowAllView.dispatch(): request.user={request.user}")
+        else:
+            print(f"ShowAllView.dispatch(): not logged in.")
+
+        return super().dispatch(request, *args, **kwargs)
 
 
 class ArticleView(DetailView):
@@ -69,11 +82,15 @@ class CreateArticleView(CreateView):
         return super().form_valid(form)
 
 
-class CreateCommentView(CreateView):
+class CreateCommentView(LoginRequiredMixin, CreateView):
     """View to handle creation of a new comment on an article"""
 
     form_class = CreateCommentForm
     template_name = "blog/create_comment_form.html"
+
+    def get_login_url(self):
+        """Return the URL for this app's login page"""
+        return reverse("login")
 
     def get_success_url(self):
         """Provide URL to redirect to after create new comment"""
@@ -87,13 +104,15 @@ class CreateCommentView(CreateView):
         We need to add the foreign key (of article) to Comment
         object before saving to db"""
 
-        print(form.cleaned_data)
-        # retrieve PK from URL pattern
-        pk = self.kwargs["pk"]
-        article = Article.objects.get(pk=pk)
-        form.instance.article = article  # set the FK
+        print(f"CreateArticleView: form.cleaned_data={form.cleaned_data}")
 
-        # delefate work to superclass form_valid method
+        # find the logged in user
+        user = self.request.user
+        print(f"CreateArticleView user={user} article.user={user}")
+
+        # attach user to form instance (Article object):
+        form.instance.user = user
+
         return super().form_valid(form)
 
 
@@ -119,3 +138,15 @@ class DeleteCommentView(DeleteView):
 
         article = comment.article
         return reverse("article", kwargs={"pk": article.pk})
+
+
+class UserRegistrationView(CreateView):
+    """A view to show/process the registration form to create a new User."""
+
+    template_name = "blog/register.html"
+    form_class = UserCreationForm
+    model = User
+
+    def get_success_url(self):
+        """The URL to redirect to after creating a new User."""
+        return reverse("login")

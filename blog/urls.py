@@ -3,6 +3,8 @@
 from django.urls import path
 from .views import *  # ShowAllView, ArticleView, RandomArticleView, CreateArticleView...
 
+from django.contrib.auth import views as auth_views
+
 urlpatterns = [
     path("", RandomArticleView.as_view(), name="random"),
     path("show_all", ShowAllView.as_view(), name="show_all"),
@@ -20,4 +22,11 @@ urlpatterns = [
         name="delete_comment",
     ),
     path("article/<int:pk>/update", UpdateArticleView.as_view(), name="update_article"),
+    ## auth
+    path(
+        "login/",
+        auth_views.LoginView.as_view(template_name="blog/login.html"),
+        name="login",
+    ),
+    path("logout/", auth_views.LogoutView.as_view(next_page="show_all"), name="logout"),
 ]

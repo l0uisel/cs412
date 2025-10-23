@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User
 
 
 # Create your models here.
@@ -15,6 +16,7 @@ class Article(models.Model):
     #     blank=True
     # )  # makemigrations and migrate when change attributions
     image_file = models.ImageField(blank=True)  # imagefield now
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  ## NEW
 
     # Indent into Article class
     def __str__(self):

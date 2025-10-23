@@ -8,7 +8,7 @@
 <h1>@{{profile.username}}: Create A Post</h1>
 
 <!-- Display HTML form -->
-<form action="{% url 'create_post' profile.pk %}" method="POST"
+<form action="{% url 'create_post' %}" method="POST"
     enctype="multipart/form-data">
     {% csrf_token %}
     <table>
