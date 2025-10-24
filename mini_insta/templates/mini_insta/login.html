@@ -5,24 +5,24 @@
 {% extends 'mini_insta/base.html' %}
  
 {% block content %}
-<!-- This basic authentication form works.
-- need to set "next" to redirect to correct page.
--->
- 
 <h1>Login</h1>
-<form method="post" action="{% url 'login' %}" >
+
+<form method="post" action="{% url 'login' %}">
     {% csrf_token %}
-    {{form}}
-    <!-- This basic login form works, but after login in
-     assumed the existance of a page at /registration/profile, which
-     does not exist.  -->
+    <table>
+        {{ form.as_table }}
+    </table>
+    
+    <!-- After successful login, where to go -->
     {% if request.GET.next %}
-    <input type="hidden" name="next" value="{{request.GET.next}}">
+        <input type="hidden" name="next" value="{{ request.GET.next }}">
     {% else %}
-    <input type="hidden" name="next" value="{% url 'show_all_profiles' %}">
+        <input type="hidden" name="next" value="{% url 'show_all_profiles' %}">
     {% endif %}
+    
+    <p><input type="submit" value="Log in" class="btn"></p>
 </form>
  
 <hr>
-Don't have an account? <a href="{% url 'register' %}">Register here</a>.
+<p>Don't have an account? <a href="{% url 'create_profile' %}">Register here</a>.</p>
 {% endblock %}

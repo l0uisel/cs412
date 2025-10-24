@@ -8,52 +8,60 @@
   <head>
     <title>MiniInsta</title>
     <link rel="stylesheet" href="{% static 'styles-insta.css' %}">
-    <nav>
-      <ul>
-        <!-- Add URL for auth -->
-        {% if request.user.is_authenticated %}
-        <li>
-          <form action="{%url 'logout' %}" method = "POST">
-            {% csrf_token %}
-            <button type="submit">
-              Logout
-            </button>
-          </form>
-        </li>
-        {% else %}
-        <li><a href="{% url 'login' %}?next={% url 'show_all_profiles' %}">Login</a></li>
-        <hr>
-        {% if request.user.is_authenticated %}
-        Logged in as: {{request.user}}
-        {% else %}
-        Not logged in.
-        {% endif %}
-      </ul>
-    </nav>
   </head>
 
-  <!-- Content of other html -->
   <body>
+    <!-- Add URL for auth -->
+    <nav>
+      {% if request.user.is_authenticated %}
+        <span>Welcome <strong>{{ request.user.username }}</strong></span>
+        <a href="{% url 'show_all_profiles' %}">| Profiles |</a>
+        {% if request.user.profiles.first %}
+          <a href="{% url 'show_profile' request.user.profiles.first.pk %}">My Profile |</a>
+        {% endif %}
+        <form method="post" action="{% url 'logout' %}" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit">Log out</button>
+        </form>
+      {% else %}
+        <a href="{% url 'show_all_profiles' %}">| Profiles |</a>
+        <a href="{% url 'create_profile' %}">Create Profile |</a>
+        <a href="{% url 'login' %}?next={% url 'show_all_profiles' %}">Log in |</a>
+      {% endif %}
+    </nav>
+
+    <hr>
+
+    <!-- Display messages (for follow/unfollow/like feedback) -->
+    {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+          <div class="message {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+    
+    <!-- Content of other html -->
     {% block content %}
     {% endblock %}
 
     <!-- Footer with show_all_profile again and profile image if on show_profile-->
-    <div class = footer>
+    <div class="footer">
       <a href="{% url 'show_all_profiles' %}"> | 👥 All Profiles | </a>
 
       {% if request.user.is_authenticated %}
         <a href="{% url 'show_feed' %}">🏠 Feed |</a>
         <a href="{% url 'search' %}">🔎 Search |</a>
-      {% endif %}
-
-      {% if profile %}
-        <a href="{% url 'show_profile' profile.pk %}">
-          <img class="footer-pfp" src="{{ profile.profile_image_url }}" alt="Profile image">
-        </a>
-
-        <!-- {Show “Add Post” only when looking at your own profile -->
-        {% if request.user.is_authenticated and profile.user == request.user %}
-          <a href="{% url 'create_post' %}" class="footer-add-post"> | ➕ Add Post |</a>
+        
+        {% if request.user.profiles.first %}
+          <a href="{% url 'show_profile' request.user.profiles.first.pk %}">
+            <img class="footer-pfp" src="{{ request.user.profiles.first.profile_image_url }}" alt="Profile image">
+          </a>
+          
+          <!-- Show "Add Post" only when on your own profile -->
+          {% if profile and profile.user == request.user %}
+            <a href="{% url 'create_post' %}" class="footer-add-post"> | ➕ Add Post |</a>
+          {% endif %}
         {% endif %}
       {% endif %}
     </div>

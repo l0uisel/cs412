@@ -1,0 +1,33 @@
+<!-- File: mini_insta/templates/mini_insta/create_profile_form.html -->
+<!-- Author: Louise Lee, llouise@bu.edu, 10/10/2025 -->
+<!-- Description: Allow ability to create profile with user account -->
+{% extends "mini_insta/base.html" %}
+
+{% block content %}
+<h1>Create your account</h1>
+
+<form method="POST">
+  {% csrf_token %}
+
+  <fieldset>
+    <legend>Account</legend>
+    {{ user_form.non_field_errors }}
+    <table>
+      {{ user_form.as_table }}
+    </table>
+  </fieldset>
+
+  <fieldset>
+    <legend>Profile</legend>
+    {{ form.non_field_errors }}
+    <table>
+      {{ form.as_table }}
+    </table>
+  </fieldset>
+
+  <div class="button-container">
+    <input type="submit" value="Create Profile" class="btn">
+    <a href="{% url 'show_all_profiles' %}" class="btn cancel">Cancel</a>
+  </div>
+</form>
+{% endblock %}

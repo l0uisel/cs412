@@ -17,7 +17,12 @@ class Profile(models.Model):
     profile_image_url = models.URLField(blank=True)
     bio_text = models.TextField(blank=True)
     join_date = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="profiles",
+        default=1,  # temporary default to handle existing rows (e.g., admin id=1)
+    )
 
     # Admin comment
     def __str__(self):
@@ -26,51 +31,35 @@ class Profile(models.Model):
         return f"{self.username}, {self.display_name}"
 
     def get_absolute_url(self):
-        """Return URL to display one instance of object"""
         return reverse("show_profile", kwargs={"pk": self.pk})
 
     def get_all_posts(self):
-        """Return Posts objects for profile"""
-        posts = Post.objects.filter(profile=self)
-        return posts
+        return Post.objects.filter(profile=self).order_by("-timestamp")
 
     # Following accessor methods
     def get_followers(self):
-        """Return Follow objects for profile"""
-        followers = Follow.objects.select_related("follower_profile").filter(
-            profile=self
-        )
-        return [p.follower_profile for p in followers]
+        """Return list of Profile objects that follow this profile"""
+        follow_objs = Follow.objects.select_related("follower").filter(followed=self)
+        return [f.follower for f in follow_objs]
 
     def get_num_followers(self):
-        """Return Follower (followers) objects for profile"""
-        return Follow.objects.filter(profile=self).count()
+        return Follow.objects.filter(followed=self).count()
 
     def get_following(self):
-        """Return Follow objects for profile"""
-        followers = Follow.objects.select_related("profile").filter(
-            follower_profile=self
-        )
-        return [p.profile for p in followers]  # list[Profile]
+        """Return list of Profile objects that this profile follows"""
+        follow_objs = Follow.objects.select_related("followed").filter(follower=self)
+        return [f.followed for f in follow_objs]
 
     def get_num_following(self):
-        """Return Follow (following) objects for profile"""
-        return Follow.objects.filter(follower_profile=self).count()
+        return Follow.objects.filter(follower=self).count()
 
     def get_num_posts(self):
-        """Return Post objects for profile"""
         return Post.objects.filter(profile=self).count()
 
-    def __str__(self):
-        return self.username
-
-    # models.py (inside Profile)
     def get_post_feed(self):
-        """Return Post objects (feed) for profile"""
-        from .models import Follow, Post
-
-        followed_ids = Follow.objects.filter(follower_profile=self).values_list(
-            "profile_id", flat=True
+        """Return posts from profiles that this profile follows"""
+        followed_ids = Follow.objects.filter(follower=self).values_list(
+            "followed_id", flat=True
         )
         return Post.objects.filter(profile_id__in=followed_ids).order_by("-timestamp")
 
@@ -88,10 +77,6 @@ class Post(models.Model):
     def __str__(self):
         """Return string rep of post"""
         return f"{self.profile.username}'s post {self.pk}"
-
-    # def get_absolute_url(self):
-    #     """Return URL to display one instance of object"""
-    #     return reverse("post", kwargs={"pk": self.pk})
 
     # Comments accessor methods
     def get_all_photos(self):
@@ -118,8 +103,8 @@ class Photo(models.Model):
 
     # Data attributes for Photo
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    image_url = models.URLField(blank=True)  # can there be no image?
-    image_file = models.ImageField(blank=True)
+    image_url = models.URLField(blank=True)
+    image_file = models.ImageField(upload_to="photos/", blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def get_image_url(self) -> str:
@@ -139,30 +124,9 @@ class Photo(models.Model):
         return f"{self.post.profile.username} photo"
 
 
-class Follow(models.Model):
-    """Encapsulated idea of an edge connecting two nodes on mini_insta(profile follow another)"""
-
-    # Data attributes for Follow
-    profile = models.ForeignKey(
-        Profile, on_delete=models.CASCADE, related_name="profile"
-    )
-    follower_profile = models.ForeignKey(
-        Profile, on_delete=models.CASCADE, related_name="follower_profile"
-    )
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        unique_together = ("profile", "follower_profile")  # no dupes
-        ordering = ["-timestamp"]
-
-    # Admin comment
-    def __str__(self):
-        publisher = self.profile.username
-        subcriber = self.follower_profile.username
-        return f"{subcriber} followed {publisher}"
-
-
 class Comment(models.Model):
+    """Comment on a post"""
+
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
@@ -175,15 +139,42 @@ class Comment(models.Model):
         return f"Comment by {self.profile.username} on Post {self.post.pk}"
 
 
-class Like(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    timestamp = models.DateTimeField(auto_now_add=True)
+class Follow(models.Model):
+    """A follows B"""
+
+    follower = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name="following"
+    )
+    followed = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name="followers"
+    )
+    created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ("post", "profile")  # one like per user per post
-        ordering = ["-timestamp"]  # newest to oldest
+        constraints = [
+            models.UniqueConstraint(
+                fields=["follower", "followed"], name="unique_follow"
+            ),
+            models.CheckConstraint(
+                check=~models.Q(follower=models.F("followed")), name="no_self_follow"
+            ),
+        ]
 
     def __str__(self):
-        who = getattr(self.profile, "display_name", None) or self.profile.username
-        return f"{self.profile.username} liked Post {self.post.pk}"
+        return f"{self.follower.username} -> {self.followed.username}"
+
+
+class Like(models.Model):
+    """Profile likes a post"""
+
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="likes")
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="likes")
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["profile", "post"], name="unique_like"),
+        ]
+
+    def __str__(self):
+        return f"{self.profile.username} ♥ {self.post.id}"

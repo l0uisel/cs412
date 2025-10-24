@@ -7,10 +7,13 @@
 {% block content %}
 <h1>Post: @{{ post.profile.username }}</h1>
 
-<p>
-  <a href="{% url 'update_post' post.pk %}" class="btn">Update</a>
-  <a href="{% url 'delete_post' post.pk %}" class="btn delete">Delete</a>
-</p>
+<!-- Only show Update/Delete if this is the logged-in user's post -->
+{% if request.user.is_authenticated and post.profile.user == request.user %}
+  <p>
+    <a href="{% url 'update_post' post.pk %}" class="btn">Update</a>
+    <a href="{% url 'delete_post' post.pk %}" class="btn delete">Delete</a>
+  </p>
+{% endif %}
 
 <ul class="photos-grid">
   {% for photo in post.get_all_photos %}
@@ -30,6 +33,23 @@
   {% endfor %}
 </ul>
 
+<!-- Like/Unlike buttons (only show if logged in and not your own post) -->
+{% if request.user.is_authenticated and user_profile and user_profile != post.profile %}
+  <div class="like-actions">
+    {% if has_liked %}
+      <form method="POST" action="{% url 'unlike_post' post.pk %}" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn unlike-btn">♥ Unlike</button>
+      </form>
+    {% else %}
+      <form method="POST" action="{% url 'like_post' post.pk %}" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn like-btn">♡ Like</button>
+      </form>
+    {% endif %}
+  </div>
+{% endif %}
+
 {% with likes=post.get_likes %}
   {% with total=likes|length %}
     {% if total > 0 %}
@@ -46,10 +66,8 @@
   {% endwith %}
 {% endwith %}
 
-
 <p><h3><strong>@{{ post.profile.username }}</h3></strong>{{post.caption}}</p>
 <p><strong>Timestamp:</strong> {{post.timestamp}}</p>
-
 
 <h3>Comments</h3>
 <ul>

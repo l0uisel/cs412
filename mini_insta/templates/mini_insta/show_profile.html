@@ -21,33 +21,51 @@
 
       <div class="stats">
         <div>
-            <!-- Stat placeholders -->
-          <div class="stats">
-            <div>
-              <strong>{{ profile.get_num_posts }}</strong>
-              <small>posts</small>
-            </div>
-            <div>
-              <a href="{% url 'show_followers' profile.pk %}">
-                <strong>{{ profile.get_num_followers }}</strong>
-                <small>followers</small>
-              </a>
-            </div>
-            <div>
-              <a href="{% url 'show_following' profile.pk %}">
-                <strong>{{ profile.get_num_following }}</strong>
-                <small>following</small>
-              </a>
-            </div>
-          </div>
+          <strong>{{ profile.get_num_posts }}</strong>
+          <small>posts</small>
+        </div>
+        <div>
+          <a href="{% url 'show_followers' profile.pk %}">
+            <strong>{{ profile.get_num_followers }}</strong>
+            <small>followers</small>
+          </a>
+        </div>
+        <div>
+          <a href="{% url 'show_following' profile.pk %}">
+            <strong>{{ profile.get_num_following }}</strong>
+            <small>following</small>
+          </a>
+        </div>
+      </div>
+
+      <!-- Follow/Unfollow buttons (only show if logged in and viewing another user's profile) -->
+      {% if request.user.is_authenticated and user_profile and user_profile != profile %}
+        <div class="follow-actions">
+          {% if is_following %}
+            <form method="POST" action="{% url 'unfollow_profile' profile.pk %}" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit" class="btn unfollow-btn">Unfollow</button>
+            </form>
+          {% else %}
+            <form method="POST" action="{% url 'follow_profile' profile.pk %}" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit" class="btn follow-btn">Follow</button>
+            </form>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
   </section>
 
   <!-- BIO -->
   <ul class="bio">
-        <li>Bio: {{ profile.bio_text }}</li>
-        <li>Joined: {{profile.join_date}}</li>
-        <a href="{% url 'update_profile' %}" class="btn">Update Profile</a>
-
+    <li>Bio: {{ profile.bio_text }}</li>
+    <li>Joined: {{profile.join_date}}</li>
+    
+    <!-- Only show Update Profile link if this is the logged-in user's profile -->
+    {% if request.user.is_authenticated and profile.user == request.user %}
+      <a href="{% url 'update_profile' %}" class="btn">Update Profile</a>
+    {% endif %}
   </ul>
 
   <!-- POSTS -->
@@ -71,6 +89,5 @@
     {% endfor %}
   </ul>
   
-
 </main>
 {% endblock %}
