@@ -16,7 +16,7 @@ body {
   h2, h3, h4, h5 { font-weight: 400; background: rgb(227,212,195); margin: 0; text-align: center; }
   
   a { color: slategray; text-decoration: none; }
-  a:hover { color: rgb(255,178,71); background: #fff; font-weight: 700; }
+  a:hover { color: rgb(255,178,71); font-weight: 700; }
   
   header {
     width: 100%;
