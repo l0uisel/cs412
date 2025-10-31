@@ -37,10 +37,17 @@ class Voter(models.Model):
 
     # Admin comment
     def __str__(self):
-        return f"{self.first_name} {self.last_name} - {self.street_number} {self.street_name}, Precinct {self.precinct_number}"
+        return "{} {} - {} {}, Precinct {}".format(
+            self.first_name or "",
+            self.last_name or "",
+            self.street_number or "",
+            self.street_name or "",
+            self.precinct_number or "",
+        )
 
 
-def _parse_date(s: str):
+# Helper
+def _parse_date(s):
     s = (s or "").strip()
     if not s:
         return None
@@ -52,24 +59,27 @@ def _parse_date(s: str):
     return None
 
 
-def _parse_bool(s: str):
-    return (s or "").strip().upper() in {"TRUE", "T", "YES", "Y", "1"}
+def _parse_bool(s):
+    return (s or "").strip().upper() in ("TRUE", "T", "YES", "Y", "1")
 
 
-def _party_two_chars(s: str) -> str:
+def _party_two_chars(s):
     # Normalize to 2-char field (strip then pad to 2 chars)
     s = (s or "").strip().upper()[:2]
     return s.ljust(2)
 
 
+# Load data
 def load_data(csv_path=None):
     """Clear and load voter records from CSV into the database."""
+    # Remove existing rows so re-load is idempotent
     Voter.objects.all().delete()
 
     if csv_path is None:
-        # Put CSV at voter_analytics/data/newton_voters.csv
+        # Default CSV path
         csv_path = Path(__file__).resolve().parent / "data" / "newton_voters.csv"
-    csv_path = Path(csv_path)
+    else:
+        csv_path = Path(csv_path)
 
     loaded_count = 0
     skipped_count = 0
@@ -78,19 +88,17 @@ def load_data(csv_path=None):
         # Use DictReader to handle headers automatically
         reader = csv.DictReader(f)
 
-        # Debug: Print field names
-        print(f"CSV Fields: {reader.fieldnames}")
+        # Debug: print field names
+        print("CSV Fields: {}".format(reader.fieldnames))
 
         # Clean up field names (strip spaces)
         reader.fieldnames = [
-            field.strip() if field else field for field in reader.fieldnames
+            (field.strip() if field else field) for field in reader.fieldnames
         ]
-        print(f"Cleaned Fields: {reader.fieldnames}")
+        print("Cleaned Fields: {}".format(reader.fieldnames))
 
         for line_num, row in enumerate(reader, start=2):
             try:
-                # Access by column name instead of index
-                # Note: Voter ID Number is in the CSV but we don't store it
                 voter = Voter(
                     last_name=(row.get("Last Name") or "").strip(),
                     first_name=(row.get("First Name") or "").strip(),
@@ -101,9 +109,11 @@ def load_data(csv_path=None):
                         row.get("Residential Address - Street Name") or ""
                     ).strip(),
                     apartment_number=(
-                        row.get("Residential Address - Apartment Number") or ""
-                    ).strip()
-                    or None,
+                        (
+                            row.get("Residential Address - Apartment Number") or ""
+                        ).strip()
+                        or None
+                    ),
                     zip_code=(row.get("Residential Address - Zip Code") or "").strip(),
                     date_of_birth=_parse_date(row.get("Date of Birth") or ""),
                     date_of_registration=_parse_date(
@@ -124,6 +134,7 @@ def load_data(csv_path=None):
                 loaded_count += 1
 
             except Exception as e:
-                print("Skipped row due to error:", e, "Row:", row)
+                skipped_count += 1
+                print("Skipped row due to error: {} Row: {}".format(e, row))
 
-    print(f"Loaded {Voter.objects.count()} voters.")
+    print("Loaded {} voters ({} skipped).".format(Voter.objects.count(), skipped_count))
