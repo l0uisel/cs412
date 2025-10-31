@@ -62,7 +62,7 @@ def _party_two_chars(s: str) -> str:
     return s.ljust(2)
 
 
-def load_data(csv_path: str | Path = None):
+def load_data(csv_path=None):
     """Clear and load voter records from CSV into the database."""
     Voter.objects.all().delete()
 
