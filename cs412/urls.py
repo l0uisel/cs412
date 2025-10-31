@@ -42,6 +42,12 @@ urlpatterns = [
     path(
         "mini_insta/", include("mini_insta.urls")
     ),  # refer anything with spring mini_insta/ to mini_insta app
+    path(
+        "marathon_analytics/", include("marathon_analytics.urls")
+    ),  # refer anything with spring marathon_analytics/ to marathon_analytics app
+    path(
+        "voter_analytics/", include("voter_analytics.urls")
+    ),  # refer anything with spring voter/ to voter_analytics app
 ]
 
 # configuration settings

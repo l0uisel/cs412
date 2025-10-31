@@ -1,0 +1,37 @@
+<!-- File: voter_analytics/templates/voter_analytics/graphs.html -->
+<!-- Author: Louise Lee, llouise@bu.edu, 10/31/2025 -->
+<!-- Description: Plotly graphs for birth-year histogram, party pie chart, and election participation bars with filters -->
+
+{% extends 'voter_analytics/base.html' %}
+
+{% block content %}
+<div class="container">
+    
+    <div class="row">
+        <h2>Filter Voters</h2>
+        {% include "voter_analytics/filter_form.html" %}    
+    </div>
+    
+    <h2>Voter Data Graphs</h2>
+    
+    <!-- Birth Year Distribution -->
+    <div class="row">
+        <h3>Distribution by Birth Year</h3>
+        {{graph_birth|safe}}
+    </div>
+    
+    <!-- Party Affiliation Distribution -->
+    <div class="row">
+        <h3>Distribution by Party Affiliation</h3>
+        {{graph_party|safe}}
+    </div>
+    
+    <!-- Election Participation -->
+    <div class="row">
+        <h3>Voter Participation in Elections</h3>
+        {{graph_elections|safe}}
+    </div>
+    
+</div>
+
+{% endblock %}

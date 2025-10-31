@@ -1,0 +1,50 @@
+<!-- File: voter_analytics/templates/voter_analytics/filter_form.html -->
+<!-- Author: Louise Lee, llouise@bu.edu, 10/31/2025 -->
+<!-- Description: Reusable GET form for filtering by party, DOB range, voter score, and election checkboxes -->
+
+<form method="GET">
+  <label>Party Affiliation:</label>
+  <select name="party_affiliation">
+    <option value="">All</option>
+    {% for p in party_affiliations %}
+      <option value="{{ p }}" {% if request.GET.party_affiliation == p %}selected{% endif %}>
+        {{ p|cut:" " }}
+      </option>
+    {% endfor %}
+  </select>
+
+  <label>Voter Score:</label>
+  <select name="voter_score">
+    <option value="">All</option>
+    {% for s in scores %}
+      <option value="{{ s }}" {% if request.GET.voter_score == s|stringformat:"s" %}selected{% endif %}>{{ s }}</option>
+    {% endfor %}
+  </select>
+
+  <label>Min Year of Birth:</label>
+  <select name="min_birth_year">
+    <option value="">Choose</option>
+    {% for y in birth_years %}
+      <option value="{{ y }}" {% if request.GET.min_birth_year == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
+    {% endfor %}
+  </select>
+
+  <label>Max Year of Birth:</label>
+  <select name="max_birth_year">
+    <option value="">Choose</option>
+    {% for y in birth_years %}
+      <option value="{{ y }}" {% if request.GET.max_birth_year == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
+    {% endfor %}
+  </select>
+
+  <p>Previous Election Participation</p>
+  <label><input type="checkbox" name="v20state"   {% if request.GET.v20state   %}checked{% endif %}> v20state</label><br>
+  <label><input type="checkbox" name="v21town"    {% if request.GET.v21town    %}checked{% endif %}> v21town</label><br>
+  <label><input type="checkbox" name="v21primary" {% if request.GET.v21primary %}checked{% endif %}> v21primary</label><br>
+  <label><input type="checkbox" name="v22general" {% if request.GET.v22general %}checked{% endif %}> v22general</label><br>
+  <label><input type="checkbox" name="v23town"    {% if request.GET.v23town    %}checked{% endif %}> v23town</label><br>
+
+    <input type="submit" value="Submit">
+    <a href="{% url 'voters' %}">Cancel</a>
+  </form>
+  

@@ -1,0 +1,65 @@
+<!-- File: voter_analytics/templates/voter_analytics/voters.html -->
+<!-- Author: Louise Lee, llouise@bu.edu, 10/31/2025 -->
+<!-- Description: Paginated voter list with reusable filter form and preserved query params -->
+
+
+{% extends 'voter_analytics/base.html' %}
+
+{% block content %}
+<div>
+
+    <div>
+        <h2>Voter Search</h2>
+        {% include "voter_analytics/filter_form.html" %}    
+    </div>
+
+    <h2>Voters</h2>
+    
+    <!-- navigation links for different pages of results -->
+    <div>
+        {% if is_paginated %}
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li>
+                    <span><a href="?page={{ page_obj.previous_page_number }}">Previous</a></span>
+                </li>
+            {% endif %}
+            <li class="">
+                <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            </li>
+            {% if page_obj.has_next %}
+                <li>
+                    <span><a href="?page={{ page_obj.next_page_number }}">Next</a></span>
+                </li>
+            {% endif %}
+        </ul>
+        {% endif %}
+    </div>
+    
+    <!-- table of voters -->
+    <div>
+        <table>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Street Address</th>
+                <th>Date of Birth</th>
+                <th>Party Affiliation</th>
+                <th>Voter Score</th>
+            </tr>
+    
+            {% for v in voters %}
+            <tr>
+                <td>{{v.first_name}}</td>
+                <td>{{v.last_name}}</td>
+                <td><a href="{% url 'voter' v.pk %}">{{v.street_number}} {{v.street_name}}</a></td>
+                <td>{{v.date_of_birth|date:"m/d/Y"}}</td>
+                <td>{{v.party_affiliation}}</td>
+                <td>{{v.voter_score}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</div>    
+{% endblock %}

@@ -1,0 +1,89 @@
+<!-- File: voter_analytics/templates/voter_analytics/voter_detail.html -->
+<!-- Author: Louise Lee, llouise@bu.edu, 10/31/2025 -->
+<!-- Description: Detail page for a single voter, including election participation and Google Maps link -->
+
+{% extends 'voter_analytics/base.html' %}
+
+{% block content %}
+<div>
+    <h2>Voter Details: {{voter.first_name}} {{voter.last_name}}</h2>
+    
+    <table>
+        <tr>
+            <th>Name:</th>
+            <td>{{voter.first_name}} {{voter.last_name}}</td>
+        </tr>
+        <tr>
+            <th>Address:</th>
+            <td>
+                {{voter.street_number}} {{voter.street_name}}
+                {% if voter.apartment_number %}
+                    Apt {{voter.apartment_number}}
+                {% endif %}
+                <br>
+                Newton, MA {{voter.zip_code}}
+            </td>
+        </tr>
+        <tr>
+            <th>Date of Birth:</th>
+            <td>{{voter.date_of_birth|date:"F d, Y"}}</td>
+        </tr>
+        <tr>
+            <th>Date of Registration:</th>
+            <td>{{voter.date_of_registration|date:"F d, Y"}}</td>
+        </tr>
+        <tr>
+            <th>Party Affiliation:</th>
+            <td>{{voter.party_affiliation}}</td>
+        </tr>
+        <tr>
+            <th>Precinct Number:</th>
+            <td>{{voter.precinct_number}}</td>
+        </tr>
+        <tr>
+            <th>Voter Score:</th>
+            <td>{{voter.voter_score}}</td>
+        </tr>
+    </table>
+    
+    <h3>Election Participation</h3>
+    <table>
+        <tr>
+            <th>Election</th>
+            <th>Voted</th>
+        </tr>
+        <tr>
+            <td>2020 State</td>
+            <td>{% if voter.v20state %}Yes{% else %}No{% endif %}</td>
+        </tr>
+        <tr>
+            <td>2021 Town</td>
+            <td>{% if voter.v21town %}Yes{% else %}No{% endif %}</td>
+        </tr>
+        <tr>
+            <td>2021 Primary</td>
+            <td>{% if voter.v21primary %}Yes{% else %}No{% endif %}</td>
+        </tr>
+        <tr>
+            <td>2022 General</td>
+            <td>{% if voter.v22general %}Yes{% else %}No{% endif %}</td>
+        </tr>
+        <tr>
+            <td>2023 Town</td>
+            <td>{% if voter.v23town %}Yes{% else %}No{% endif %}</td>
+        </tr>
+    </table>
+    
+    <h3>Location</h3>
+    <p>
+        <a href="https://www.google.com/maps/search/?api=1&query={{voter.street_number}}+{{voter.street_name|urlencode}}+Newton+MA+{{voter.zip_code}}" target="_blank">
+            View on Google Maps
+        </a>
+    </p>
+    
+    <p>
+        <a href="{% url 'voters' %}">Back to Voter List</a>
+    </p>
+</div>
+
+{% endblock %}

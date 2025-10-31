@@ -1,0 +1,26 @@
+<!-- File: voter_analytics/templates/voter_analytics/base.html-->
+<!-- Author: Louise Lee, llouise@bu.edu, 10/29/2025 -->
+<!-- Description: Reusable, consistent structure with a navigation bar and a content block -->
+
+{% load static %}
+<html>
+    <head>
+        <title>Voter Analytics</title>
+        <link rel="stylesheet" href="{% static 'styles-voter.css' %}">
+    </head>
+    <body>
+        <header>
+            <h1>Newton Voter Analytics</h1>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'voters' %}">🏠 Voters</a></li>
+                    <li><a href="{% url 'graphs' %}">📈 Graphs</a></li>
+                </ul>
+            </nav>
+        </header>
+    
+        {% block content %}
+        {% endblock %}    
+  
+    </body>
+</html>
