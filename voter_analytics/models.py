@@ -57,7 +57,7 @@ def _parse_bool(s: str):
 
 
 def _party_two_chars(s: str) -> str:
-    # Normalize to 2-char field (strip then right)
+    # Normalize to 2-char field (strip then pad to 2 chars)
     s = (s or "").strip().upper()[:2]
     return s.ljust(2)
 
@@ -71,32 +71,58 @@ def load_data(csv_path: str | Path = None):
         csv_path = Path(__file__).resolve().parent / "data" / "newton_voters.csv"
     csv_path = Path(csv_path)
 
-    with csv_path.open(newline="", encoding="utf-8") as f:
-        reader = csv.reader(f)
-        headers = next(reader, None)  # Skip header row
+    loaded_count = 0
+    skipped_count = 0
 
-        for row in reader:
-            # Cateogory orders:
+    with csv_path.open(newline="", encoding="utf-8") as f:
+        # Use DictReader to handle headers automatically
+        reader = csv.DictReader(f)
+
+        # Debug: Print field names
+        print(f"CSV Fields: {reader.fieldnames}")
+
+        # Clean up field names (strip spaces)
+        reader.fieldnames = [
+            field.strip() if field else field for field in reader.fieldnames
+        ]
+        print(f"Cleaned Fields: {reader.fieldnames}")
+
+        for line_num, row in enumerate(reader, start=2):
             try:
+                # Access by column name instead of index
+                # Note: Voter ID Number is in the CSV but we don't store it
                 voter = Voter(
-                    last_name=row[0].strip(),
-                    first_name=row[1].strip(),
-                    street_number=row[2].strip(),
-                    street_name=row[3].strip(),
-                    apartment_number=row[4].strip() or None,
-                    zip_code=row[5].strip(),
-                    date_of_birth=_parse_date(row[6]),
-                    date_of_registration=_parse_date(row[7]),
-                    party_affiliation=_party_two_chars(row[8]),
-                    precinct_number=row[9].strip(),
-                    v20state=_parse_bool(row[10]),
-                    v21town=_parse_bool(row[11]),
-                    v21primary=_parse_bool(row[12]),
-                    v22general=_parse_bool(row[13]),
-                    v23town=_parse_bool(row[14]),
-                    voter_score=int((row[15] or "0").strip() or 0),
+                    last_name=(row.get("Last Name") or "").strip(),
+                    first_name=(row.get("First Name") or "").strip(),
+                    street_number=(
+                        row.get("Residential Address - Street Number") or ""
+                    ).strip(),
+                    street_name=(
+                        row.get("Residential Address - Street Name") or ""
+                    ).strip(),
+                    apartment_number=(
+                        row.get("Residential Address - Apartment Number") or ""
+                    ).strip()
+                    or None,
+                    zip_code=(row.get("Residential Address - Zip Code") or "").strip(),
+                    date_of_birth=_parse_date(row.get("Date of Birth") or ""),
+                    date_of_registration=_parse_date(
+                        row.get("Date of Registration") or ""
+                    ),
+                    party_affiliation=_party_two_chars(
+                        row.get("Party Affiliation") or ""
+                    ),
+                    precinct_number=(row.get("Precinct Number") or "").strip(),
+                    v20state=_parse_bool(row.get("v20state") or ""),
+                    v21town=_parse_bool(row.get("v21town") or ""),
+                    v21primary=_parse_bool(row.get("v21primary") or ""),
+                    v22general=_parse_bool(row.get("v22general") or ""),
+                    v23town=_parse_bool(row.get("v23town") or ""),
+                    voter_score=int(((row.get("voter_score") or "0").strip() or "0")),
                 )
                 voter.save()
+                loaded_count += 1
+
             except Exception as e:
                 print("Skipped row due to error:", e, "Row:", row)
 
