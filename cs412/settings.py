@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     "mini_insta",  # A3 - App for displaying insta profiles
     "marathon_analytics",  # Example 8
     "voter_analytics",  # A8
+    "rest_framework",
 ]
 
 MIDDLEWARE = [

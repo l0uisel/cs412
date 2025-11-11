@@ -30,4 +30,6 @@ urlpatterns = [
     ),
     path("logout/", auth_views.LogoutView.as_view(next_page="show_all"), name="logout"),
     path("register/", UserRegistrationView.as_view(), name="register"),
+    ## API views:
+    path(r"api/articles/", ArticleListAPIView.as_view(), name="article_list_api"),
 ]

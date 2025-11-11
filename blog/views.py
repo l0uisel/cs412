@@ -150,3 +150,20 @@ class UserRegistrationView(CreateView):
     def get_success_url(self):
         """The URL to redirect to after creating a new User."""
         return reverse("login")
+
+
+########################################################
+
+## enable REST API for this application
+from rest_framework import generics
+from .serializers import *
+
+
+# expose Article model as a list rather than single
+class ArticleListAPIView(generics.ListCreateAPIView):
+    """
+    View will expose API for Articles with List and Create.
+    """
+
+    queryset = Article.objects.all()
+    serializer_class = ArticleSerializer
