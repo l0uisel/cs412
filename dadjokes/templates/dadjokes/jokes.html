@@ -1,0 +1,18 @@
+<!-- File: dadjokes/templates/dadjokes/jokes.html -->
+<!-- Author: Louise Lee, llouise@bu.edu, 11/11/2025 -->
+<!-- Description: Template to show all jokes.
+    Extending a base layout and looping through the jokes from the view context.
+-->
+{% extends 'dadjokes/base.html' %}
+
+{% block content %}
+<h2>All Jokes</h2>
+
+{% for joke in jokes %}
+<div class="joke">
+    <p class="joke-text">{{ joke.text }}</p>
+    <p class="contributor">- {{ joke.contributor }}</p>
+    <a href="{% url 'joke' joke.pk %}">View Details</a>
+</div>
+{% endfor %}
+{% endblock %}

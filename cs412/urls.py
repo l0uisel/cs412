@@ -48,6 +48,9 @@ urlpatterns = [
     path(
         "voter_analytics/", include("voter_analytics.urls")
     ),  # refer anything with spring voter/ to voter_analytics app
+    path(
+        "dadjokes/", include("dadjokes.urls")
+    ),  # refer anything with spring dadjokes/ to dadjokes app
 ]
 
 # configuration settings

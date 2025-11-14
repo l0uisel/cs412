@@ -1,0 +1,18 @@
+<!-- File: dadjokes/templates/dadjokes/index.html -->
+<!-- Author: Louise Lee, llouise@bu.edu, 11/10/2025 -->
+<!-- Description: Home page to display 1 randomly generated joke and image -->
+{% extends 'dadjokes/base.html' %}
+
+{% block content %}
+<h2>Random Dad Joke & Picture</h2>
+
+<div class="joke">
+    <p class="joke-text">{{ joke.text }}</p>
+    <p class="contributor">- {{ joke.contributor }}</p>
+</div>
+
+<div class="picture">
+    <img src="{{ picture.image_url }}" alt="Silly picture">
+    <p class="contributor">- {{ picture.contributor }}</p>
+</div>
+{% endblock %}

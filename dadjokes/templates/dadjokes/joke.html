@@ -1,0 +1,14 @@
+<!-- File: dadjokes/templates/dadjokes/joke.html -->
+<!-- Author: Louise Lee, llouise@bu.edu, 11/11/2025 -->
+<!-- Description: 1 random joke -->
+{% extends 'dadjokes/base.html' %}
+
+{% block content %}
+<h2>Joke #{{ joke.pk }}</h2>
+
+<div class="joke">
+    <p class="joke-text">{{ joke.text }}</p>
+    <p class="contributor">- {{ joke.contributor }}</p>
+    <p class="timestamp">Created: {{ joke.created }}</p>
+</div>
+{% endblock %}

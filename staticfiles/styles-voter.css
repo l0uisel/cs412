@@ -1,0 +1,47 @@
+/* File: static/styles-voter.css */
+/* Author: Louise Lee, llouise@bu.edu, 10/30/2025 */
+/* Description: Styling for my pages */
+
+body {
+    background-color: #f0e7e0; /* Set background to white */
+    color: rgb(160, 69, 69);       /* Set default text color */
+    font-family: arial;     /* Set font family */
+    font-size: larger;      /* Increase default font size */
+    max-width: 960px;
+    margin: 20px auto;
+    padding: 20px;
+  }
+  
+  h1 { font-weight: 700; background: rgb(207,228,247); color: tomato; text-align: center; }
+  h2, h3, h4, h5 { font-weight: 400; background: rgb(227,212,195); margin: 0; text-align: center; }
+  
+  a { color: slategray; text-decoration: none; }
+  a:hover { color: rgb(255,178,71); font-weight: 700; }
+  
+  header {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: aliceblue;
+    position: sticky; top: 0; z-index: 999;
+    padding: 8px 12px;
+  }
+  
+  nav { justify-self: end; }
+  nav li { display: inline-block; margin-left: 20px; }
+  
+  table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+  th, td { border: 1px dashed darkblue; padding: 6px; background: #fff; color: darkblue; }
+  tr:hover { background: aliceblue; }
+  
+  .site-form select, .site-form input[type="checkbox"] { margin-top: 6px; }
+  
+  input[type="submit"] {
+    background: slategray; color: #fff; border: 0; padding: 6px 12px; border-radius: 4px; cursor: pointer;
+  }
+  
+  @media (max-width: 560px) {
+    body { font-size: 16px; padding: 12px; }
+    nav li { display: block; margin: 6px 0 0 0; }
+  }
+  

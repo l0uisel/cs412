@@ -1,0 +1,20 @@
+<!-- File: dadjokes/templates/dadjokes/jokes.html -->
+<!-- Author: Louise Lee, llouise@bu.edu, 11/11/2025 -->
+<!-- Description: Template to show all images.
+    Extending a base layout and looping through the images from the view context.
+-->
+{% extends 'dadjokes/base.html' %}
+
+{% block content %}
+<h2>All Pictures</h2>
+
+<div class="picture-grid">
+    {% for picture in pictures %}
+    <div class="picture">
+        <img src="{{ picture.image_url }}" alt="joke picture">
+        <p class="contributor">By: {{ picture.contributor }}</p>
+        <a href="{% url 'picture' picture.pk %}">View Details</a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -56,6 +56,8 @@ INSTALLED_APPS = [
     "marathon_analytics",  # Example 8
     "voter_analytics",  # A8
     "rest_framework",
+    "dadjokes",  # A10
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
@@ -66,6 +68,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = "cs412.urls"
@@ -117,6 +120,8 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 
 # Internationalization

@@ -1,0 +1,27 @@
+<!-- File: dadjokes/templates/dadjokes/base.html -->
+<!-- Author: Louise Lee, llouise@bu.edu, 11/10/2025 -->
+<!-- Description: Reusable, consistent structure with a navigation bar and a content block -->
+
+{% load static %}
+
+<html>
+  <!-- Title and styling to apply -->
+<head>
+    <title>Dad Jokes</title>
+    <link rel="stylesheet" href="{% static 'styles-joke.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Dad Jokes</h1>
+        <nav>
+            <a href="{% url 'index' %}">New Joke!</a>
+            <a href="{% url 'jokes' %}">All Jokes</a>
+            <a href="{% url 'pictures' %}">All Pictures</a>
+        </nav>
+    </header>
+    
+    <!-- Content of other html -->
+    {% block content %}
+    {% endblock %}
+</body>
+</html>

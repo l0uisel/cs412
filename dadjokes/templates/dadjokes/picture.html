@@ -1,0 +1,14 @@
+<!-- File: dadjokes/templates/dadjokes/picture.html -->
+<!-- Author: Louise Lee, llouise@bu.edu, 11/11/2025 -->
+<!-- Description: 1 random picture -->
+{% extends 'dadjokes/base.html' %}
+
+{% block content %}
+<h2>Picture #{{ picture.pk }}</h2>
+
+<div class="picture">
+    <img src="{{ picture.image_url }}" alt="joke picture">
+    <p class="contributor">- {{ picture.contributor }}</p>
+    <p class="timestamp">Created: {{ picture.created }}</p>
+</div>
+{% endblock %}
