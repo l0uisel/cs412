@@ -51,6 +51,9 @@ urlpatterns = [
     path(
         "dadjokes/", include("dadjokes.urls")
     ),  # refer anything with spring dadjokes/ to dadjokes app
+    path(
+        "project/", include("project.urls")
+    ),  # refer anything with spring project/ to project app
 ]
 
 # configuration settings

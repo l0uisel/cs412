@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "dadjokes",  # A10
     "corsheaders",
+    "project",  # final
 ]
 
 MIDDLEWARE = [
