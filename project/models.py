@@ -164,7 +164,9 @@ class TimerRecord(models.Model):
         return reverse("timer_detail", kwargs={"pk": self.pk})
 
     # -------------
+    #
     # State helpers
+    #
     # -------------
 
     def complete_cycle(self):

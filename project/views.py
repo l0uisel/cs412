@@ -1,6 +1,8 @@
 # File: project/views.py
 # Author: Louise Lee, llouise@bu.edu 11/24/2025
-# Description: View functions for digital desk app
+# Description: Defines view function, handles rendering of the different pages by using
+# context data
+# View functions for digital desk app
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import (
@@ -47,8 +49,12 @@ class DeskView(LoginRequiredMixin, TemplateView):
     login_url = "login"
 
     def get_context_data(self, **kwargs):
+        """Add additional context data"""
         ctx = super().get_context_data(**kwargs)
         user = self.request.user
+
+        # Overall check if user has a profile already
+        # If so, we can pull their defaults/continue from their activity
 
         # Get or create profile
         profile, created = Profile.objects.get_or_create(
@@ -65,7 +71,7 @@ class DeskView(LoginRequiredMixin, TemplateView):
             },
         )
 
-        # Get active timer if any
+        # Get active timer (if any)
         active_timer = TimerRecord.objects.filter(user=user, status="active").first()
 
         ctx["profile"] = profile
@@ -96,6 +102,7 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
     login_url = "login"
 
     def get_object(self):
+        """Profile for the logged-in user"""
         profile, created = Profile.objects.get_or_create(
             user=self.request.user,
             defaults={"display_name": self.request.user.username},
@@ -104,7 +111,7 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
 
 
 class UpdateProfileView(LoginRequiredMixin, UpdateView):
-    """Update user profile"""
+    """View class to handle update of post based on PK"""
 
     model = Profile
     form_class = ProfileForm
@@ -112,6 +119,7 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
     login_url = "login"
 
     def get_object(self):
+        """Profile for the logged-in user"""
         profile, created = Profile.objects.get_or_create(
             user=self.request.user,
             defaults={"display_name": self.request.user.username},
@@ -119,6 +127,7 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
         return profile
 
     def get_success_url(self):
+        """Redirect back to the updated profile page"""
         messages.success(self.request, "Profile updated successfully!")
         return reverse("profile_detail", kwargs={"pk": self.object.pk})
 
@@ -148,6 +157,7 @@ class TimerDetailView(LoginRequiredMixin, DetailView):
         return TimerRecord.objects.filter(user=self.request.user)
 
     def get_context_data(self, **kwargs):
+        """Add additional context data"""
         ctx = super().get_context_data(**kwargs)
         ctx["add_cycles_form"] = AddCyclesForm()
         return ctx
@@ -176,6 +186,7 @@ class CreateTimerView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
+        """Redirect back to timer detail"""
         return reverse("timer_detail", kwargs={"pk": self.object.pk})
 
 
@@ -367,6 +378,7 @@ class CreateDiaryEntryView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
+        """Redirect back to the list of entries"""
         return reverse("diary_list")
 
 
@@ -382,6 +394,7 @@ class UpdateDiaryEntryView(LoginRequiredMixin, UpdateView):
         return DiaryEntry.objects.filter(user=self.request.user)
 
     def get_success_url(self):
+        """Redirect back to the diary entry"""
         return reverse("diary_detail", kwargs={"pk": self.object.pk})
 
 
@@ -436,6 +449,7 @@ class CreatePhotoView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
+        """Show photo on the desk"""
         return reverse("desk")
 
 
@@ -462,3 +476,165 @@ class StickyNoteListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return StickyNote.objects.filter(user=self.request.user)
+
+
+class StickyNoteDetailView(LoginRequiredMixin, DetailView):
+    """Detail view for a sticky note"""
+
+    model = StickyNote
+    template_name = "project/sticky_note_detail.html"
+    context_object_name = "note"
+    login_url = "login"
+
+    def get_queryset(self):
+        return StickyNote.objects.filter(user=self.request.user)
+
+
+class CreateStickyNoteView(LoginRequiredMixin, CreateView):
+    """Create a new sticky note"""
+
+    model = StickyNote
+    form_class = StickyNoteForm
+    template_name = "project/create_sticky_note.html"
+    login_url = "login"
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        messages.success(self.request, "Sticky note created! 📝")
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        """Show sticky note on desk"""
+        return reverse("desk")
+
+
+class UpdateStickyNoteView(LoginRequiredMixin, UpdateView):
+    """Update an existing sticky note"""
+
+    model = StickyNote
+    form_class = StickyNoteForm
+    template_name = "project/update_sticky_note.html"
+    login_url = "login"
+
+    def get_queryset(self):
+        return StickyNote.objects.filter(user=self.request.user)
+
+    def get_success_url(self):
+        """Redirect back to the list of sticky notes"""
+        return reverse("sticky_note_list")
+
+
+class DeleteStickyNoteView(LoginRequiredMixin, DeleteView):
+    """Delete a sticky note"""
+
+    model = StickyNote
+    template_name = "project/delete_sticky_note.html"
+    success_url = reverse_lazy("sticky_note_list")
+    login_url = "login"
+
+    def get_queryset(self):
+        return StickyNote.objects.filter(user=self.request.user)
+
+
+class ToggleStickyNoteView(LoginRequiredMixin, View):
+    """Toggle completion status of a sticky note"""
+
+    login_url = "login"
+
+    def post(self, request, pk):
+        note = get_object_or_404(StickyNote, pk=pk, user=request.user)
+        note.is_completed = not note.is_completed
+        note.save()
+
+        status = "completed" if note.is_completed else "reopened"
+        messages.success(
+            request,
+            (
+                f'Note "{note.title}" {status}! ✓'
+                if note.is_completed
+                else f'Note "{note.title}" {status}!'
+            ),
+        )
+
+        return redirect(request.META.get("HTTP_REFERER", "desk"))
+
+
+# Desk Buddy Views
+class DeskBuddyView(LoginRequiredMixin, ListView):
+    """View all desk buddy messages"""
+
+    model = DeskBuddy
+    template_name = "project/desk_buddy.html"
+    context_object_name = "messages"
+    login_url = "login"
+
+    def get_queryset(self):
+        # Mark all as read when viewing
+        DeskBuddy.objects.filter(user=self.request.user, is_read=False).update(
+            is_read=True
+        )
+        return DeskBuddy.objects.filter(user=self.request.user)
+
+
+class GetDeskBuddyMessageView(LoginRequiredMixin, View):
+    """Get randomized message: water reminder, sticky note reminder, or API affirmation"""
+
+    login_url = "login"
+
+    def get(self, request):
+        user = request.user
+        message = None
+
+        # Get user's current water status
+        today_water = WaterLog.objects.filter(user=user, date=date.today()).first()
+        water_needed = today_water and today_water.get_percentage_complete() < 100
+
+        # Get uncompleted sticky notes
+        incomplete_notes = StickyNote.objects.filter(user=user, is_completed=False)
+        has_tasks = incomplete_notes.exists()
+
+        # Build list of available message types
+        available_types = []
+        if water_needed:
+            available_types.append("water")
+        if has_tasks:
+            available_types.append("task")
+        available_types.append("affirmation")  # Always available
+
+        # Randomly choose a message type
+        import random
+
+        message_type = random.choice(available_types)
+
+        # Generate message based on type
+        if message_type == "water" and water_needed:
+            remaining = today_water.daily_goal_ml - today_water.total_intake_ml
+            message = f"💧 Don't forget to hydrate! You need {remaining}ml more to reach your daily goal. Stay healthy!"
+
+        elif message_type == "task" and has_tasks:
+            # Pick a random incomplete task
+            random_note = random.choice(incomplete_notes)
+            message = f"📝 Reminder: Don't forget about '{random_note.title}'! Time to get it done!"
+
+        else:  # affirmation from API
+            try:
+                # Call the affirmations API
+                response = requests.get("https://www.affirmations.dev/", timeout=5)
+                response.raise_for_status()
+                data = response.json()
+                message = data.get("affirmation", "You are doing great! Keep going! 🌟")
+            except requests.RequestException:
+                # Fallback affirmations if API fails
+                fallback_affirmations = [
+                    "You are capable of amazing things! Believe in yourself! ✨",
+                    "Every small step forward is progress. Keep going! 🚀",
+                    "Your hard work and dedication will pay off! 💪",
+                    "You have the power to create positive change! 🌟",
+                    "Take a moment to appreciate how far you've come! 🎉",
+                ]
+                message = random.choice(fallback_affirmations)
+
+        # Save to database
+        buddy_message = DeskBuddy.objects.create(user=user, affirmation=message)
+
+        return JsonResponse({"message": message, "id": buddy_message.pk})

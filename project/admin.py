@@ -3,6 +3,7 @@
 # Description: What models we give admin access to
 # Admin configuration for digital desk models
 
+# Give access to django admin to see models
 from django.contrib import admin
 from .models import (
     Profile,
