@@ -1,0 +1,21 @@
+<!-- File: project/templates/project/photo_detail.html -->
+<!-- Author: Louise Lee, llouise, 12/06/2025 -->
+<!-- Description: Detail of photo shown -->
+
+<!-- Inherit structure and layout of base -->
+{% extends 'project/base.html' %}
+
+{% block content %}
+<h1>🖼️ Photo Details</h1>
+<p>
+    <a href="{% url 'photo_list' %}" class="btn">← Back to All Photos</a>
+</p>
+
+<!-- Details - photo, caption, date added -->
+<img src="{{ photo.image.url }}" alt="{{ photo.caption }}" style="max-width: 100%; max-height: 600px;">
+{% if photo.caption %}
+    <p>{{ photo.caption }}</p>
+{% endif %}
+<p><small>Added on {{ photo.date_added|date:"F d, Y" }}</small></p>
+<p><a href="{% url 'delete_photo' photo.pk %}" class="btn">Delete Photo</a></p>
+{% endblock %}

@@ -1,0 +1,24 @@
+<!-- File: project/templates/project/create_diary.html -->
+<!-- Author: Louise Lee, llouise, 12/02/2025 -->
+<!-- Description: Interactive desk interface -->
+<!-- Where all desk items shown -->
+
+<!-- Inherit structure and layout of base -->
+{% extends 'project/base.html' %}
+
+{% block content %}
+<h1>📔 New Diary Entry</h1>
+<!-- POST = send data -->
+<form method="POST">
+    {% csrf_token %}
+    <table>
+        <!-- Render form fields as table -->
+        {{ form.as_table }}
+    </table>
+    <!-- Submit button to send form -->
+    <input type="submit" value="Save Entry" class="btn">
+    <!-- Back to diary list if cancel -->
+    <div style="text-align: center;">
+    <a href="{% url 'diary_list' %}" class="btn">Cancel</a></div>
+</form>
+{% endblock %}

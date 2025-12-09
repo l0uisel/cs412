@@ -1,0 +1,28 @@
+<!-- File: project/templates/project/delete_water_log.html -->
+<!-- Author: Louise Lee, llouise, 12/08/2025 -->
+<!-- Description: Delete water log confirmation -->
+
+<!-- Inherit structure and layout of base -->
+{% extends 'project/base.html' %}
+{% block title %}Delete Water Log{% endblock %}
+{% block content %}
+<h1>💧 Delete Water Log</h1>
+<h2>Are you sure?</h2>
+<p>You're about to delete this water log:</p>
+<p>&nbsp;</p>
+
+<!-- Show and warn about deleting -->
+<ul>
+    <li><strong>Date:</strong> {{ waterlog.date|date:"F d, Y" }}</li>
+    <li><strong>Intake:</strong> {{ waterlog.total_intake_ml }}ml</li>
+    <li><strong>Goal:</strong> {{ waterlog.daily_goal_ml }}ml</li>
+</ul>
+<!-- Submit button to send form -->
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit" class="btn">Yes, Delete</button>
+    <!-- Redirect to the entry if cancel -->
+    <div style="text-align: center;">
+    <a href="{% url 'water_log_detail' waterlog.pk %}" class="btn">Cancel</a></div>
+</form>
+{% endblock %}

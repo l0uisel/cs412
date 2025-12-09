@@ -1,0 +1,52 @@
+<!-- File: project/templates/project/profile_detail.html -->
+<!-- Author: Louise Lee, llouise, 12/08/2025 -->
+<!-- Description: Display user profile with weekly statistics -->
+
+<!-- Inherit structure and layout of base -->
+{% extends 'project/base.html' %}
+
+{% block content %}
+<h1>👤 | Profile</h1>
+<!-- Page nav - update or back to desk -->
+<a href="{% url 'update_profile' %}" class="btn">✏️ Edit Profile</a>
+<a href="{% url 'desk' %}" class="btn">← Back to Desk</a>
+
+<!-- Basic info of user account -->
+<h2>{{ profile.display_name|default:request.user.username }}</h2>
+<p>@{{ request.user.username }}</p>
+<p><small>Member since {{ profile.created_at|date:"M d, Y" }}</small></p>
+
+<p>&nbsp;</p>
+{% if profile.bio %}
+    <p> {{ profile.bio }} </p>
+{% endif %}
+<p>&nbsp;</p>
+<hr>
+<p>&nbsp;</p>
+
+<!-- Stats -->
+<h3>Overall Statistics</h3>
+<ul>
+    <li><strong>Total Focus Time:</strong> {{ profile.get_total_focus_time }} minutes</li>
+    <li><strong>Tasks Completed:</strong> {{ profile.get_total_tasks_completed }}</li>
+</ul>
+<p>&nbsp;</p>
+<h3>📊 This Week's Progress</h3>
+<p><small>Week starting {{ profile.get_week_start|date:"F d" }}</small></p>
+
+<ul>
+    <li>✅ <strong>{{ profile.get_weekly_tasks_completed }}</strong> Tasks Completed</li>
+    <li>📔 <strong>{{ profile.get_weekly_diary_entries }}</strong> Diary Entries</li>
+    <li>💧 <strong>{{ profile.get_weekly_water_average|floatformat:0 }}</strong> Avg Water (ml/day)</li>
+</ul>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<!-- Auto pref for creating entries -->
+<h3>⚙️ Your Preferences</h3>
+<ul>
+    <li><strong>Default Focus Duration:</strong> {{ profile.default_focus_minutes }} min</li>
+    <li><strong>Default Break Duration:</strong> {{ profile.default_break_minutes }} min</li>
+    <li><strong>Daily Water Goal:</strong> {{ profile.daily_water_goal_ml }} ml</li>
+</ul>
+{% endblock %}

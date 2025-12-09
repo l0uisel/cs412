@@ -1,0 +1,28 @@
+<!-- File: project/templates/project/delete_sticky_note.html -->
+<!-- Author: Louise Lee, llouise, 12/06/2025 -->
+<!-- Description: Confirmation page for deleting a sticky note -->
+
+{% extends 'project/base.html' %}
+
+{% block content %}
+<h1>📝 Delete Sticky Note</h1>
+<h2>Are you sure?</h2>
+<p>You're about to delete this sticky note:</p>
+<p>&nbsp;</p>
+<!-- Show and warn about deleting -->
+<h3>{{ object.title }}</h3>
+<p>{{ object.content }}</p>
+
+{% if object.due_date %}
+    <p><small>Due: {{ object.due_date|date:"M d, Y" }}</small></p>
+{% endif %}
+
+<!-- Submit button to send form -->
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit" class="btn">Yes, Delete</button>
+    <!-- Redirect to the entry if cancel -->
+    <div style="text-align: center;">
+    <a href="{% url 'sticky_note_detail' object.pk %}" class="btn">Cancel</a></div>
+</form>
+{% endblock %}

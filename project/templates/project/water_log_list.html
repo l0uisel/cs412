@@ -1,0 +1,41 @@
+<!-- File: project/templates/project/water_log_list.html -->
+<!-- Author: Louise Lee, llouise, 12/09/2025 -->
+<!-- Description: Water log list-->
+
+<!-- Inherit structure and layout of base -->
+{% extends 'project/base.html' %}
+
+{% block content %}
+<h1>💧 | Water Intake</h1>
+<p><a href="{% url 'create_water_log' %}" class="btn">➕ New Water Log</a>
+<a href="{% url 'desk' %}" class="btn">← Back to Desk</a>
+</p>
+<p>&nbsp;</p>
+<table>
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Intake</th>
+            <th>Goal</th>
+            <th>Progress</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for log in water_logs %}
+        <!-- Snippet of water, users can select for detail for a day -->
+            <tr>
+                <td>{{ log.date|date:"M d, Y" }}</td>
+                <td><strong>{{ log.total_intake_ml }}ml</strong></td>
+                <td>{{ log.daily_goal_ml }}ml</td>
+                <td>{{ log.get_percentage_complete|floatformat:0 }}%</td>
+                <td><a href="{% url 'water_log_detail' log.pk %}" class="btn">View</a></td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="5">No water logs yet. Start tracking your water intake!</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

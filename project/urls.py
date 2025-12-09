@@ -2,10 +2,6 @@
 # Author: Louise Lee, llouise@bu.edu, 11/24/2025
 # Description: URL routing for digital desk app
 
-# File: project/urls.py
-# Author: [Your Name], [Your Email], 11/24/2025
-# Description: URL routing for digital desk app
-
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from .views import *
@@ -13,6 +9,8 @@ from .views import *
 urlpatterns = [
     # Main desk view
     path("", DeskView.as_view(), name="desk"),
+    # Desk Buddy URLs
+    path("buddy/message/", GetDeskBuddyMessageView.as_view(), name="get_buddy_message"),
     # Profile URLs
     path("profile/", ProfileDetailView.as_view(), name="profile_detail"),
     path("profile/update/", UpdateProfileView.as_view(), name="update_profile"),
@@ -35,8 +33,17 @@ urlpatterns = [
     path("timer/<int:pk>/cancel/", CancelTimerView.as_view(), name="cancel_timer"),
     # Water Log URLs
     path("water/", WaterLogListView.as_view(), name="water_log_list"),
+    path("water/create/", CreateWaterLogView.as_view(), name="create_water_log"),
     path("water/<int:pk>/", WaterLogDetailView.as_view(), name="water_log_detail"),
     path("water/update/", UpdateWaterLogView.as_view(), name="update_water_log"),
+    path(
+        "water/<int:pk>/update/",
+        UpdateWaterLogDetailView.as_view(),
+        name="update_water_log_detail",
+    ),
+    path(
+        "water/<int:pk>/delete/", DeleteWaterLogView.as_view(), name="delete_water_log"
+    ),
     # Diary URLs
     path("diary/", DiaryListView.as_view(), name="diary_list"),
     path("diary/<int:pk>/", DiaryDetailView.as_view(), name="diary_detail"),
@@ -67,9 +74,6 @@ urlpatterns = [
         ToggleStickyNoteView.as_view(),
         name="toggle_sticky_note",
     ),
-    # Desk Buddy URLs
-    path("buddy/", DeskBuddyView.as_view(), name="desk_buddy"),
-    path("buddy/message/", GetDeskBuddyMessageView.as_view(), name="get_buddy_message"),
     # Authentication URLs
     path(
         "login/",
@@ -77,4 +81,5 @@ urlpatterns = [
         name="login",
     ),
     path("logout/", auth_views.LogoutView.as_view(next_page="desk"), name="logout"),
+    path("create_profile/", CreateProfileView.as_view(), name="create_profile"),
 ]

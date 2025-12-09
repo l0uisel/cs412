@@ -1,0 +1,31 @@
+<!-- File: project/templates/project/create_timer.html -->
+<!-- Author: Louise Lee, llouise, 12/08/2025 -->
+<!-- Description: Confirmation page for deleting a timer session -->
+
+<!-- Inherit structure and layout of base -->
+{% extends 'project/base.html' %}
+
+{% block content %}
+<h1>⏱️ New Focus Session</h1>
+
+<!-- POST = send data -->
+<form method="POST">
+    {% csrf_token %}
+    <!-- Render form fields as table -->
+    <table>
+        {{ form.as_table }}
+    </table>
+
+    <input type="submit" value="Start Focus Session " class="btn">
+    <div style="text-align: center;">
+    <a href="{% url 'timer_list' %}" class="btn">Cancel</a></div>
+</form>
+<p>&nbsp;</p>
+<h3>💡 Pomodoro Technique!</h3>
+<ul>
+    <li>Standard: alternate between work and rest periods</li>
+    <li>Stay focused during work periods</li>
+    <li>Use breaks to rest and recharge</li>
+    <li>This tracks your focus session cycles</li>
+</ul>
+{% endblock %}

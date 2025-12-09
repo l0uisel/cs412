@@ -1,0 +1,24 @@
+<!-- File: project/templates/project/update_water_log.html -->
+<!-- Author: Louise Lee, llouise, 12/08/2025 -->
+<!-- Description: Update a water log entry -->
+
+<!-- Inherit structure and layout of base -->
+{% extends 'project/base.html' %}
+{% block content %}
+<h1>💧 Edit Water Log</h1>
+<p>&nbsp;</p>
+<p><strong>Date:</strong> {{ water_log.date|date:"F d, Y" }}</p>
+<!-- POST = send data -->
+<form method="POST">
+    {% csrf_token %}
+    <table>
+        <!-- Render form fields as table -->
+        {{ form.as_table }}
+    </table>
+    <!-- Submit button to send form -->
+    <input type="submit" value="Update Log ✏️" class="btn">
+    <!-- Back to water log list if cancel -->
+    <div style="text-align: center;">
+    <a href="{% url 'water_log_detail' water_log.pk %}" class="btn">Cancel</a></div>
+</form>
+{% endblock %}

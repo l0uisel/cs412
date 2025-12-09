@@ -20,6 +20,10 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.utils import timezone
 from datetime import date
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
+from django.db.models import Q
+
 import requests
 
 from .models import (
@@ -39,6 +43,7 @@ from .forms import (
     DiaryEntryForm,
     PhotoItemForm,
     StickyNoteForm,
+    WaterLogUpdateForm,
 )
 
 
@@ -74,22 +79,101 @@ class DeskView(LoginRequiredMixin, TemplateView):
         # Get active timer (if any)
         active_timer = TimerRecord.objects.filter(user=user, status="active").first()
 
+        # Generate buddy message on page load
+        buddy_message = self._generate_buddy_message(user, today_water)
+
+        # Add the user's profile to the template context
         ctx["profile"] = profile
+
+        # Get up to 5 incomplete sticky notes for the current user
         ctx["sticky_notes"] = StickyNote.objects.filter(user=user, is_completed=False)[
             :5
         ]
+
+        # Get the 3 most recent completed timer records for the current user
         ctx["recent_timers"] = TimerRecord.objects.filter(
             user=user, status="completed"
         )[:3]
+
+        # Add the currently active timer (if one exists)
         ctx["active_timer"] = active_timer
+
+        # Get the user's most recent diary entry
         ctx["recent_diary"] = DiaryEntry.objects.filter(user=user).first()
+
+        # Get the user's most recent uploaded photo
         ctx["current_photo"] = PhotoItem.objects.filter(user=user).first()
+
+        # Add today's water intake log
         ctx["water_log"] = today_water
+
+        # Count how many unread DeskBuddy messages the user has
         ctx["unread_messages"] = DeskBuddy.objects.filter(
             user=user, is_read=False
         ).count()
 
+        # Generate DeskBuddy message
+        ctx["buddy_message"] = buddy_message
+        # Return the completed context dictionary to the template
         return ctx
+
+    def _generate_buddy_message(self, user, today_water):
+        """Generate a buddy message based on user's current state"""
+        import random
+
+        message = None
+
+        # Check uncompleted tasks
+        incomplete_notes = StickyNote.objects.filter(user=user, is_completed=False)
+        has_tasks = incomplete_notes.exists()
+
+        # Build available message types
+        available_types = []
+        if has_tasks:
+            available_types.append("task")
+        available_types.append("affirmation")
+
+        # Randomly choose a type
+        message_type = random.choice(available_types)
+
+        # Generate message
+        if message_type == "task" and has_tasks:
+            random_note = random.choice(list(incomplete_notes))
+            message = f"📝 Reminder: Don't forget to wok on '{random_note.title}' - You got this!"
+
+        else:  # affirmation from API
+            try:
+                response = requests.get("https://www.affirmations.dev/", timeout=5)
+                response.raise_for_status()
+                data = response.json()
+                message = data.get("affirmation", "You are doing great! Keep going! 🌟")
+            except requests.RequestException:
+                fallback_affirmations = [
+                    "You are capable of amazing things! Believe in yourself! ✨",
+                    "Every small step forward is progress. Keep going! 🚀",
+                    "Your hard work and dedication will pay off! 💪",
+                    "You have the power to create positive change! 🌟",
+                    "Take a moment to appreciate how far you've come! 🎉",
+                ]
+                message = random.choice(fallback_affirmations)
+
+        # Save to database
+        DeskBuddy.objects.create(user=user, affirmation=message)
+
+        return message
+
+    def get_new_buddy_message(request):
+        """Return a fresh buddy message without reloading the page."""
+        if not request.user.is_authenticated:
+            return JsonResponse({"error": "Unauthorized"}, status=401)
+
+        # Reuse your message generator
+        view = DeskView()
+        message = view._generate_buddy_message(
+            request.user, WaterLog.objects.get(user=request.user, date=date.today())
+        )
+
+        return JsonResponse({"message": message})
 
 
 # Profile Views
@@ -108,6 +192,57 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
             defaults={"display_name": self.request.user.username},
         )
         return profile
+
+
+class CreateProfileView(CreateView):
+    """Register user and create a linked profile in one submit"""
+
+    model = Profile
+    form_class = ProfileForm
+    template_name = "project/create_profile_form.html"  # uses the template below
+    context_object_name = "profile"
+
+    def get_context_data(self, **kwargs):
+        """
+        Add the UserCreationForm (for username/password) to the context
+        so the template can show both forms together.
+        """
+        ctx = super().get_context_data(**kwargs)
+        # If we already have a user_form with errors, keep it.
+        # Otherwise, show a blank one.
+        ctx.setdefault("user_form", UserCreationForm())
+        return ctx
+
+    def form_valid(self, form):
+        """
+        Handle both:
+        - UserCreationForm (user account)
+        - ProfileForm (this view's form)
+        """
+        user_form = UserCreationForm(self.request.POST)
+
+        # If the user form is not valid, re-render page with errors
+        if not user_form.is_valid():
+            ctx = self.get_context_data(form=form)
+            ctx["user_form"] = user_form
+            return self.render_to_response(ctx)
+
+        # Create the User
+        user = user_form.save()
+
+        # Log the user in
+        login(self.request, user, backend="django.contrib.auth.backends.ModelBackend")
+
+        # Attach the new user to the Profile form before saving
+        form.instance.user = user
+
+        # Let CreateView handle saving the Profile
+        response = super().form_valid(form)
+        return response
+
+    def get_success_url(self):
+        """After making the account, send them to their desk."""
+        return reverse("desk")
 
 
 class UpdateProfileView(LoginRequiredMixin, UpdateView):
@@ -129,7 +264,7 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         """Redirect back to the updated profile page"""
         messages.success(self.request, "Profile updated successfully!")
-        return reverse("profile_detail", kwargs={"pk": self.object.pk})
+        return reverse("profile_detail")
 
 
 # Timer Views
@@ -279,6 +414,7 @@ class DeleteTimerView(LoginRequiredMixin, DeleteView):
 
     model = TimerRecord
     template_name = "project/delete_timer.html"
+    context_object_name = "timer"
     success_url = reverse_lazy("timer_list")
     login_url = "login"
 
@@ -339,6 +475,72 @@ class UpdateWaterLogView(LoginRequiredMixin, View):
         return redirect("desk")
 
 
+class UpdateWaterLogDetailView(LoginRequiredMixin, UpdateView):
+    """Update a specific water log (goal + add water, but date is fixed)."""
+
+    model = WaterLog
+    form_class = WaterLogUpdateForm  # use update form with no date
+    template_name = "project/update_water_log.html"
+    login_url = "login"
+    context_object_name = "water_log"
+
+    def get_queryset(self):
+        return WaterLog.objects.filter(user=self.request.user)
+
+    def form_valid(self, form):
+        """Apply add_amount and updated goal; keep date unchanged."""
+        water_log = form.save(commit=False)
+
+        add_amount = form.cleaned_data.get("add_amount") or 0
+        if add_amount:
+            water_log.total_intake_ml += add_amount
+
+        # We do not touch water_log.date here, stays as-is
+        water_log.save()
+        messages.success(self.request, "Water log updated! 💧")
+        return redirect("water_log_detail", pk=water_log.pk)
+
+
+class CreateWaterLogView(LoginRequiredMixin, CreateView):
+    """Create a new water log for today"""
+
+    model = WaterLog
+    form_class = WaterLogForm
+    template_name = "project/create_water_log.html"
+    login_url = "login"
+
+    def form_valid(self, form):
+        """
+        Create a log for the logged-in user.
+        - daily_goal_ml comes from the form
+        - total_intake_ml starts at add_amount (or 0 if empty)
+        """
+        user = self.request.user
+
+        water_log = form.save(commit=False)
+        water_log.user = user  # attach owner
+
+        # Start intake at whatever they put in Add water (ml)
+        add_amount = form.cleaned_data.get("add_amount") or 0
+        water_log.total_intake_ml = add_amount
+
+        water_log.save()
+        messages.success(self.request, "New water log created! 💧")
+        return redirect("water_log_detail", pk=water_log.pk)
+
+
+class DeleteWaterLogView(LoginRequiredMixin, DeleteView):
+    """Delete a water log"""
+
+    model = WaterLog
+    template_name = "project/delete_water_log.html"
+    success_url = reverse_lazy("water_log_list")
+    login_url = "login"
+
+    def get_queryset(self):
+        return WaterLog.objects.filter(user=self.request.user)
+
+
 # Diary Views
 class DiaryListView(LoginRequiredMixin, ListView):
     """List all diary entries"""
@@ -350,6 +552,40 @@ class DiaryListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return DiaryEntry.objects.filter(user=self.request.user)
+
+
+class DiaryListView(LoginRequiredMixin, ListView):
+    """List diary entries, with optional search on title/content."""
+
+    model = DiaryEntry
+    template_name = "project/diary_list.html"
+    context_object_name = "entries"
+
+    def get_login_url(self):
+        """Return the URL for this app's login page (same style as SearchView)."""
+        return reverse("login")
+
+    def dispatch(self, request, *args, **kwargs):
+        # Grab and normalize the search query once
+        self.query = request.GET.get("q", "").strip()
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        """Filter diary entries for this user, optionally by the search query."""
+        qs = DiaryEntry.objects.filter(user=self.request.user).order_by("-date")
+
+        if self.query:
+            qs = qs.filter(
+                Q(title__icontains=self.query) | Q(content__icontains=self.query)
+            )
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        # So the search box can show what the user typed
+        ctx["query"] = self.query
+        return ctx
 
 
 class DiaryDetailView(LoginRequiredMixin, DetailView):
@@ -389,6 +625,7 @@ class UpdateDiaryEntryView(LoginRequiredMixin, UpdateView):
     form_class = DiaryEntryForm
     template_name = "project/update_diary.html"
     login_url = "login"
+    context_object_name = "entry"
 
     def get_queryset(self):
         return DiaryEntry.objects.filter(user=self.request.user)
@@ -405,6 +642,7 @@ class DeleteDiaryEntryView(LoginRequiredMixin, DeleteView):
     template_name = "project/delete_diary.html"
     success_url = reverse_lazy("diary_list")
     login_url = "login"
+    context_object_name = "entry"
 
     def get_queryset(self):
         return DiaryEntry.objects.filter(user=self.request.user)
@@ -460,6 +698,7 @@ class DeletePhotoView(LoginRequiredMixin, DeleteView):
     template_name = "project/delete_photo.html"
     success_url = reverse_lazy("photo_list")
     login_url = "login"
+    context_object_name = "photo"
 
     def get_queryset(self):
         return PhotoItem.objects.filter(user=self.request.user)
@@ -515,6 +754,7 @@ class UpdateStickyNoteView(LoginRequiredMixin, UpdateView):
     form_class = StickyNoteForm
     template_name = "project/update_sticky_note.html"
     login_url = "login"
+    context_object_name = "note"
 
     def get_queryset(self):
         return StickyNote.objects.filter(user=self.request.user)
@@ -531,6 +771,7 @@ class DeleteStickyNoteView(LoginRequiredMixin, DeleteView):
     template_name = "project/delete_sticky_note.html"
     success_url = reverse_lazy("sticky_note_list")
     login_url = "login"
+    context_object_name = "note"
 
     def get_queryset(self):
         return StickyNote.objects.filter(user=self.request.user)
@@ -607,11 +848,7 @@ class GetDeskBuddyMessageView(LoginRequiredMixin, View):
         message_type = random.choice(available_types)
 
         # Generate message based on type
-        if message_type == "water" and water_needed:
-            remaining = today_water.daily_goal_ml - today_water.total_intake_ml
-            message = f"💧 Don't forget to hydrate! You need {remaining}ml more to reach your daily goal. Stay healthy!"
-
-        elif message_type == "task" and has_tasks:
+        if message_type == "task" and has_tasks:
             # Pick a random incomplete task
             random_note = random.choice(incomplete_notes)
             message = f"📝 Reminder: Don't forget about '{random_note.title}'! Time to get it done!"
@@ -622,15 +859,14 @@ class GetDeskBuddyMessageView(LoginRequiredMixin, View):
                 response = requests.get("https://www.affirmations.dev/", timeout=5)
                 response.raise_for_status()
                 data = response.json()
-                message = data.get("affirmation", "You are doing great! Keep going! 🌟")
+                message = data.get("affirmation", "You are doing great! Keep going!")
             except requests.RequestException:
                 # Fallback affirmations if API fails
                 fallback_affirmations = [
-                    "You are capable of amazing things! Believe in yourself! ✨",
-                    "Every small step forward is progress. Keep going! 🚀",
-                    "Your hard work and dedication will pay off! 💪",
-                    "You have the power to create positive change! 🌟",
-                    "Take a moment to appreciate how far you've come! 🎉",
+                    "Every small step forward is progress. Keep going!",
+                    "Your hard work and dedication will pay off!",
+                    "You have the power to create positive change!",
+                    "Take a moment to appreciate how far you've come!",
                 ]
                 message = random.choice(fallback_affirmations)
 

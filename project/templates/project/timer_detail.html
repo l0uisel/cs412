@@ -1,0 +1,81 @@
+<!-- File: project/templates/project/timer_detail.html -->
+<!-- Author: Louise Lee, llouise, 12/08/2025 -->
+<!-- Description: Confirmation page for deleting a timer session -->
+
+<!-- Inherit structure and layout of base -->
+{% extends 'project/base.html' %}
+
+{% block content %}
+<h1>⏱️ Timer Session </h1>
+
+<p><small>Run your own timer, track your cycles here</small></p>
+
+<p>
+    <a href="{% url 'timer_list' %}" class="btn">← Back to All Timers</a>
+</p>
+
+<!-- Pomodoro session details - dates, title, text -->
+<h2>{{ timer.label|default:"Focus Session" }}</h2>
+<p><strong>Status:</strong> 
+    {% if timer.status == 'active' %}🟢 Active
+    {% elif timer.status == 'completed' %}✅ Completed
+    {% else %}❌ Cancelled{% endif %}
+</p>
+
+<ul>
+    <li><strong>Started:</strong> {{ timer.start_time|date:"M d, Y - g:i A" }}</li>
+    {% if timer.completed_at %}
+        <li><strong>Ended:</strong> {{ timer.completed_at|date:"M d, Y - g:i A" }}</li>
+    {% endif %}
+    <li><strong>Focus Duration:</strong> {{ timer.focus_duration_minutes }} minutes</li>
+    <li><strong>Break Duration:</strong> {{ timer.break_duration_minutes }} minutes</li>
+    <li><strong>Cycles Progress:</strong> {{ timer.cycles_completed }} / {{ timer.planned_cycles }}</li>
+    <li><strong>Total Focus Time:</strong> {{ timer.get_total_focus_minutes }} minutes</li>
+</ul>
+<p>&nbsp;</p>
+{% if timer.status == 'active' %}
+    <h3>Session In Progress</h3>
+    
+    {% if timer.cycles_completed < timer.planned_cycles %}
+        <p>You're on cycle <strong>{{ timer.cycles_completed|add:1 }}</strong> of <strong>{{ timer.planned_cycles }}</strong>.</p>
+        
+        <form method="POST" action="{% url 'complete_cycle' timer.pk %}" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn">✓ Complete This Cycle</button>
+        </form>
+    {% else %}
+        <p><strong>🎉 Done! You've completed all {{ timer.planned_cycles }} cycles!</strong></p>
+    {% endif %}
+    
+    <form method="POST" action="{% url 'finish_timer_early' timer.pk %}" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn">End Session Now</button>
+    </form>
+
+    <p>&nbsp;</p>
+    
+<hr>
+    <form method="POST" action="{% url 'add_cycles' timer.pk %}">
+        {% csrf_token %}
+        <table>
+            {{ add_cycles_form.as_table }}
+        </table>
+        <button type="submit" class="btn">Add Cycles</button>
+    </form>
+
+    <p>
+        <form method="POST" action="{% url 'cancel_timer' timer.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn">Cancel Session</button>
+        </form>
+    </p>
+{% elif timer.status == 'completed' %}
+    <h3>🎉 Session Completed!</h3>
+    <p>Great work! You completed {{ timer.cycles_completed }} cycle(s) and focused for {{ timer.get_total_focus_minutes }} minutes.</p>
+    <p><a href="{% url 'delete_timer' timer.pk %}" class="btn">Delete Session</a></p>
+{% else %}
+    <h3>Session Cancelled</h3>
+    <p>This session was cancelled after {{ timer.cycles_completed }} cycle(s).</p>
+    <p><a href="{% url 'delete_timer' timer.pk %}" class="btn">Delete Session</a></p>
+{% endif %}
+{% endblock %}

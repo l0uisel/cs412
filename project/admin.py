@@ -5,15 +5,7 @@
 
 # Give access to django admin to see models
 from django.contrib import admin
-from .models import (
-    Profile,
-    TimerRecord,
-    WaterLog,
-    DiaryEntry,
-    PhotoItem,
-    StickyNote,
-    DeskBuddy,
-)
+from .models import *
 
 
 @admin.register(Profile)
@@ -94,8 +86,8 @@ class PhotoItemAdmin(admin.ModelAdmin):
 
 @admin.register(StickyNote)
 class StickyNoteAdmin(admin.ModelAdmin):
-    list_display = ["title", "user", "color", "is_completed", "due_date", "created_at"]
-    list_filter = ["user", "color", "is_completed", "due_date"]
+    list_display = ["title", "user", "is_completed", "due_date", "created_at"]
+    list_filter = ["user", "is_completed", "due_date"]
     search_fields = ["title", "content", "user__username"]
     date_hierarchy = "created_at"
     list_editable = ["is_completed"]

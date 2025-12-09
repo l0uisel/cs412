@@ -1,0 +1,12 @@
+<!-- File: project/templates/project/logged_out.html -->
+<!-- Author: Louise Lee, llouise, 12/08/2025 -->
+<!-- Description: Logout confirmation page -->
+
+<!-- Inherit structure and layout of base -->
+{% extends 'project/base.html' %}
+{% block content %}
+<h1>Log out successful</h1>
+<p>
+    <a class="btn" href="{% url 'login' %}">Log in again</a>
+</p>
+{% endblock %}

@@ -1,0 +1,43 @@
+<!-- File: project/templates/project/sticky_note_list.html -->
+<!-- Author: Louise Lee, llouise, 12/07/2025 -->
+<!-- Description: All sticky notes listed -->
+
+<!-- Inherit structure and layout of base -->
+{% extends 'project/base.html' %}
+
+{% block content %}
+<h1>📝 | Sticky Notes</h1>
+<p>
+    <a href="{% url 'create_sticky_note' %}" class="btn">➕ New Sticky Note</a>
+    <a href="{% url 'desk' %}" class="btn">← Back to Desk</a>
+</p>
+<p>&nbsp;</p>
+<ul>
+    {% for note in notes %}
+        <!-- Snippet of notes, users can select for detail -->
+        <li>
+            <h3>{% if note.is_completed %}✓{% endif %} {{ note.title }}</h3>
+            <p>{{ note.content|truncatewords:30 }}</p>
+            {% if note.due_date %}
+                <p><small><strong>Due:</strong> {{ note.due_date|date:"M d, Y" }}</small></p>
+            {% endif %}
+            <p>
+                <a href="{% url 'sticky_note_detail' note.pk %}" class="btn">View</a>
+                <a href="{% url 'update_sticky_note' note.pk %}" class="btn">Edit</a>
+                <form method="POST" action="{% url 'toggle_sticky_note' note.pk %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn">
+                        {% if note.is_completed %}Reopen{% else %}Complete{% endif %}
+                    </button>
+                </form>
+                <a href="{% url 'delete_sticky_note' note.pk %}" class="btn">Delete</a>
+            </p>
+        </li>
+        <p>&nbsp;</p>
+        <hr>
+        <p>&nbsp;</p>
+    {% empty %}
+        <li>No sticky notes yet. Create your first note!</li>
+    {% endfor %}
+</ul>
+{% endblock %}

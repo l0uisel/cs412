@@ -1,0 +1,329 @@
+<!-- File: project/templates/project/desk.html -->
+<!-- Author: Louise Lee, llouise@bu.edu, 12/02/2025 -->
+<!-- Description: Main desk page with pixel icons and Buddy API.
+     Layout:
+       Top left - Buddy
+       Top middle – Featured Photo
+       Top right – Sticky notes
+       Bottom left – Timers
+       Bottom middle – Diary
+       Bottom right – Water tracker
+-->
+
+{% extends "project/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<style>
+  /* Center the desk on the page */
+  .desk-container {
+    max-width: 1100px;
+    margin: 1.5rem auto;
+  }
+
+  /* Desk surface: table wood image */
+  .desk-surface {
+    position: relative;
+    width: 100%;
+    height: 550px;
+    background-image: url("{% static 'project_table.png' %}");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 200% 200%;
+    border-radius: 12px;
+    border: 3px solid #8b5a2b;
+  }
+
+  /* Generic clickable item on the desk */
+  .desk-item {
+    position: absolute;
+    width: 190px;
+    height: 230px;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .desk-item a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Inner card with pop-out on hover */
+  .desk-item-box {
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #dddddd;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem;
+
+    /* Pop-out effect */
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+
+  .desk-item-box:hover {
+    transform: scale(1.05) translateY(-5px);
+    border-color: #888888;
+  }
+
+  /* Pixel icons / images inside each item */
+  .desk-item-img {
+    width: 200px;
+    height: auto;
+    margin-bottom: 0.4rem;
+  }
+
+  /* Slightly wider image */
+  .desk-photo-img {
+    width: 120px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 0.4rem;
+  }
+
+  .desk-item-label {
+    font-size: 0.95rem;
+    font-weight: bold;
+  }
+
+  .desk-item-subtext {
+    font-size: 0.8rem;
+    margin-top: 0.2rem;
+    color: #555555;
+  }
+
+  /* ----- Positions on the desk ----- */
+
+  /* Top left: Buddy */
+  .buddy-item {
+    top: 30px;
+    left: 40px;
+  }
+
+  /* Top middle: Photo */
+  .photo-item {
+    top: 30px;
+    left: 50%;
+    margin-left: -95px;
+  }
+
+  /* Top right: Sticky notes */
+  .stickies-item {
+    top: 30px;
+    right: 40px;
+  }
+
+  /* Bottom left: Timers */
+  .timer-item {
+    bottom: 30px;
+    left: 40px;
+  }
+
+  /* Bottom middle: Diary */
+  .diary-item {
+    bottom: 30px;
+    left: 50%;
+    margin-left: -95px;
+  }
+
+  /* Bottom right: Water */
+  .water-item {
+    bottom: 30px;
+    right: 40px;
+  }
+
+  /* ----- Buddy modal styles (for API message) ----- */
+
+  .modal-overlay {
+    display: none;         /* hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.active {
+    display: flex;
+  }
+
+  .modal-content {
+    background: #ffffff;
+    padding: 1.5rem;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    position: relative;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+
+  .buddy-message-box {
+    background: #f5f5f5;
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+    min-height: 60px;
+    font-style: italic;
+  }
+</style>
+
+
+<h1>🖥️ | My Digital Desk</h1>
+
+<div class="desk-container">
+  <div class="desk-surface">
+
+    <!-- Top left: Buddy (opens a modal with API message) -->
+    <div class="desk-item buddy-item">
+      <!-- Use div with onclick so we can open the modal instead of navigating -->
+      <div class="desk-item-box" onclick="openBuddyModal()">
+        <img src="{% static 'project_buddy.png' %}" alt="Buddy" class="desk-item-img">
+      </div>
+    </div>
+
+    <!-- Top middle: Featured photo (shows actual image if available) -->
+    <div class="desk-item photo-item">
+      <a href="{% url 'photo_list' %}">
+        <div class="desk-item-box">
+          {% if current_photo %}
+            <img src="{{ current_photo.image.url }}" alt="Featured photo" class="desk-photo-img">
+          {% else %}
+            <!-- Fallback if no photos yet -->
+            <p>Photo frame empty</p>
+          {% endif %}
+          {% if current_photo %}
+            <div></div>
+          {% else %}
+            <div class="desk-item-subtext">Upload a photo</div>
+          {% endif %}
+        </div>
+      </a>
+    </div>
+
+    <!-- Top right: Sticky notes (simple count, no colors) -->
+    <div class="desk-item stickies-item">
+      <a href="{% url 'sticky_note_list' %}">
+        <div class="desk-item-box">
+          <img src="{% static 'project_stickies.png' %}" alt="Sticky notes" class="desk-item-img">
+          {% if sticky_notes %}
+            <div class="desk-item-subtext">
+              {{ sticky_notes|length }} note{{ sticky_notes|length|pluralize }}
+            </div>
+          {% else %}
+            <div class="desk-item-subtext">No notes yet</div>
+          {% endif %}
+        </div>
+      </a>
+    </div>
+
+    <!-- Bottom left: Timers -->
+    <div class="desk-item timer-item">
+      <a href="{% url 'timer_list' %}">
+        <div class="desk-item-box">
+          <img src="{% static 'project_timer.png' %}" alt="Timer" class="desk-item-img">
+          {% if active_timer %}
+            <div class="desk-item-subtext">Active: {{ active_timer.label }}</div>
+          {% else %}
+            <div class="desk-item-subtext">No active timer</div>
+          {% endif %}
+        </div>
+      </a>
+    </div>
+
+    <!-- Bottom middle: Diary -->
+    <div class="desk-item diary-item">
+      <a href="{% url 'diary_list' %}">
+        <div class="desk-item-box">
+          <img src="{% static 'project_diary.png' %}" alt="Diary" class="desk-item-img">
+          {% if recent_diary %}
+            <div class="desk-item-subtext">
+              Last entry: {{ recent_diary.date|date:"M d" }}
+            </div>
+          {% else %}
+            <div class="desk-item-subtext">No entries yet</div>
+          {% endif %}
+        </div>
+      </a>
+    </div>
+
+    <!-- Bottom right: Water tracker -->
+    <div class="desk-item water-item">
+      <a href="{% url 'water_log_list' %}">
+        <div class="desk-item-box">
+          <img src="{% static 'project_water.png' %}" alt="Water" class="desk-item-img">
+          {% if water_log %}
+            <div class="desk-item-subtext">
+              {{ water_log.total_intake_ml }} ml today
+            </div>
+          {% else %}
+            <div class="desk-item-subtext">No log for today</div>
+          {% endif %}
+        </div>
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<!-- Buddy Modal (shows a message from the Buddy API) -->
+<div id="buddy-modal" class="modal-overlay" onclick="closeBuddyModal()">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeBuddyModal()">&times;</button>
+    <h2>Desk Buddy says:</h2>
+    <p>&nbsp;</p>
+    <div id="buddy-message" class="buddy-message-box">
+      <!-- Filled in by fetch -->
+    </div>
+  </div>
+</div>
+
+<script>
+  // Open the buddy modal and fetch a NEW message every time
+  function openBuddyModal() {
+    const overlay = document.getElementById("buddy-modal");
+    const messageBox = document.getElementById("buddy-message");
+
+    overlay.classList.add("active");
+    document.body.style.overflow = "hidden";
+
+    // Call your Django view that returns JSON: { "message": "..." }
+    fetch("{% url 'get_buddy_message' %}")
+      .then(response => response.json())
+      .then(data => {
+        messageBox.textContent = data.message;
+      })
+  }
+
+  // Close the buddy modal
+  function closeBuddyModal() {
+    const overlay = document.getElementById("buddy-modal");
+    overlay.classList.remove("active");
+    document.body.style.overflow = "auto";
+  }
+</script>
+
+
+{% endblock %}

@@ -208,8 +208,8 @@ class WaterLog(models.Model):
     # Which user this water log belongs to
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="water_logs")
 
-    # Date of this log automatically set to the date when the record is created
-    date = models.DateField(auto_now_add=True)
+    # Date of this log: default = today, but user can choose/override
+    date = models.DateField(default=timezone.now)
 
     # Total water the user drank that day (ml)
     total_intake_ml = models.IntegerField(
@@ -292,6 +292,9 @@ class PhotoItem(models.Model):
     # When the photo was added
     date_added = models.DateTimeField(auto_now_add=True)
 
+    # Avoid null error - default value
+    is_featured = models.BooleanField(default=False)
+
     class Meta:
         # Newest photos first
         ordering = ["-date_added"]
@@ -308,15 +311,6 @@ class PhotoItem(models.Model):
 class StickyNote(models.Model):
     """Quick notes that appear as sticky notes on the desk"""
 
-    # Available color choices for the sticky notes in the UI
-    COLOR_CHOICES = [
-        ("yellow", "Yellow"),
-        ("pink", "Pink"),
-        ("blue", "Blue"),
-        ("green", "Green"),
-        ("purple", "Purple"),
-    ]
-
     # Which user this sticky note belongs to
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="sticky_notes"
@@ -327,9 +321,6 @@ class StickyNote(models.Model):
 
     # Optional longer text content for the note
     content = models.TextField(null=True, blank=True, help_text="Optional note content")
-
-    # Visual color theme for the note
-    color = models.CharField(max_length=20, choices=COLOR_CHOICES, default="yellow")
 
     # Optional due/reminder date for the note
     due_date = models.DateField(

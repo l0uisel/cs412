@@ -1,0 +1,27 @@
+<!-- File: project/templates/project/delete_timer.html -->
+<!-- Author: Louise Lee, llouise, 12/08/2025 -->
+<!-- Description: Confirmation page for deleting a timer session -->
+
+<!-- Inherit structure and layout of base -->
+{% extends 'project/base.html' %}
+
+{% block title %}Delete Timer Session{% endblock %}
+
+{% block content %}
+<h1>⏱️ Delete Timer Session</h1>
+
+<h2>Are you sure?</h2>
+<p>You're about to delete this timer session:</p>
+
+<ul>
+    <li><strong>Label:</strong> {{ timer.label|default:"Focus Session" }}</li>
+    <li><strong>Cycles:</strong> {{ timer.cycles_completed }} / {{ timer.planned_cycles }}</li>
+    <li><strong>Duration:</strong> {{ timer.focus_duration_minutes }}min focus</li>
+</ul>
+
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit" class="btn">Yes, Delete</button>
+    <a href="{% url 'timer_detail' timer.pk %}" class="btn">Cancel</a>
+</form>
+{% endblock %}

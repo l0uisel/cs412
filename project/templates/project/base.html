@@ -1,4 +1,70 @@
 <!-- File: project/templates/project/base.html -->
 <!-- Author: Louise Lee, llouise@bu.edu, 12/02/2025 -->
-<!-- Description: Reusable, consistent structure with a navigation bar and a content block
-    Base template for digital desk app -->
+<!-- Description: Reusable layout for the Digital Desk app with navigation, user info, and a content block -->
+
+{% load static %}
+<html>
+  <!-- Page metadata, title, and stylesheet -->
+  <head>
+    <title>Digital Desk</title>
+    <!-- Main stylesheet for the project -->
+    <link rel="stylesheet" href="{% static 'styles-project.css' %}">
+  </head>
+
+  <body>
+    <!-- Top navigation bar -->
+    <nav>
+      <div class="nav-links">
+        <!-- Desk is always available -->
+        <a href="{% url 'desk' %}">🏠 Desk</a>
+
+        <!-- Only show app sections if the user is logged in -->
+        {% if user.is_authenticated %}
+          <a href="{% url 'profile_detail' %}">👤 Profile</a>
+          <a href="{% url 'timer_list' %}">⏱️ Timers</a>
+          <a href="{% url 'water_log_list' %}">💧 Water</a>
+          <a href="{% url 'diary_list' %}">📔 Diary</a>
+          <a href="{% url 'sticky_note_list' %}">📝 Notes</a>
+          <a href="{% url 'photo_list' %}">🖼️ Photos</a>
+        {% endif %}
+      </div>
+
+      <div class="user-info">
+        {% if user.is_authenticated %}
+          <!-- Greeting with the logged-in username -->
+          <span>Welcome, @{{ user.username }}!</span>
+
+          <!-- Logout POST -->
+          <form method="post" action="{% url 'logout' %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="nav-link-btn">Logout</button>
+          </form>
+        {% else %}
+          <!-- If user is not logged in, show a login link -->
+          <a href="{% url 'login' %}">Login</a>
+        {% endif %}
+      </div>
+    </nav>
+
+    <!--
+    Messages section
+    Show feedback (success, errors, info) after actions like
+    creating/updating/deleting items, logging in/out, etc.
+    -->
+    {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+          <div class="message {{ message.tags }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <!-- Main content block -->
+    {% block content %}
+    {% endblock %}
+    
+    <footer> <div style="text-align: center;"> Created by llouise@bu.edu </div></footer>
+  </body>
+</html>

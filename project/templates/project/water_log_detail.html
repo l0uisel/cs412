@@ -1,0 +1,30 @@
+<!-- File: project/templates/project/water_log_detail.html -->
+<!-- Author: Louise Lee, llouise, 12/08/2025 -->
+<!-- Description: Detailed view of water log for single day -->
+
+<!-- Inherit structure and layout of base -->
+{% extends 'project/base.html' %}
+
+{% block content %}
+<h1>💧 Water Log of {{ water_log.date|date:"F d, Y" }}</h1>
+<p>
+    <a href="{% url 'water_log_list' %}" class="btn">← Back to All Water Logs</a>
+</p>
+
+<!-- Details - water drank, total needed, calculations -->
+<h2>{{ water_log.total_intake_ml }}ml</h2>
+<p>of {{ water_log.daily_goal_ml }}ml goal</p>
+<p>Progress: {{ water_log.get_percentage_complete|floatformat:0 }}%</p>
+{% if water_log.total_intake_ml >= water_log.daily_goal_ml %}
+    <h3>🎉 Goal Achieved!</h3>
+    <p>Great job staying hydrated today!</p>
+{% else %}
+    <h3>Keep Going!</h3>
+    <p>You need {{ water_log.daily_goal_ml|add:"-"|add:water_log.total_intake_ml }}ml more to reach your goal.</p>
+{% endif %}
+
+<p>
+    <a href="{% url 'update_water_log_detail' water_log.pk %}" class="btn">Edit Log</a>
+    <a href="{% url 'delete_water_log' water_log.pk %}" class="btn">Delete Log</a>
+</p>
+{% endblock %}

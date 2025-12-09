@@ -1,0 +1,23 @@
+<!-- File: project/templates/project/update_profile.html -->
+<!-- Author: Louise Lee, llouise, 12/08/2025 -->
+<!-- Description: Form to update user profile -->
+
+<!-- Inherit structure and layout of base -->
+{% extends 'project/base.html' %}
+
+{% block content %}
+<h1>✏️ Edit Profile</h1>
+<!-- POST = send data -->
+<form method="POST">
+    {% csrf_token %}
+    <table>
+        <!-- Render form fields as table -->
+        {{ form.as_table }}
+    </table>
+    <!-- Submit button to send form -->
+    <input type="submit" value="Save Changes" class="btn">
+    <!-- Back to profile detail if cancel -->
+    <div style="text-align: center;">
+    <a href="{% url 'profile_detail' %}" class="btn">Cancel</a></div>
+</form>
+{% endblock %}

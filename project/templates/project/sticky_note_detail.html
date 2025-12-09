@@ -1,0 +1,37 @@
+<!-- File: project/templates/project/sticky_note_detail.html -->
+<!-- Author: Louise Lee, llouise, 12/07/2025 -->
+<!-- Description: Detail of note -->
+
+{% extends 'project/base.html' %}
+
+{% block content %}
+<h1>📝 Sticky Note</h1>
+<p>
+    <a href="{% url 'sticky_note_list' %}" class="btn">← Back to All Notes</a>
+</p>
+{% if note.is_completed %}
+    <p><strong>✓ Completed</strong></p>
+{% endif %}
+
+<!-- Note details - dates, title, text, completion -->
+<h2>{{ note.title }}</h2>
+<p>{{ note.content|linebreaks }}</p>
+{% if note.due_date %}
+    <p><strong>📅 Due Date:</strong> {{ note.due_date|date:"F d, Y" }}
+    {% if note.due_date < today and not note.is_completed %}
+        <span style="color: red;">(Overdue!)</span>
+    {% endif %}
+    </p>
+{% endif %}
+<p><small>Created: {{ note.created_at|date:"M d, Y" }}</small></p>
+<p>
+    <form method="POST" action="{% url 'toggle_sticky_note' note.pk %}" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn">
+            {% if note.is_completed %}Reopen Note{% else %}Mark Complete{% endif %}
+        </button>
+    </form>
+    <a href="{% url 'update_sticky_note' note.pk %}" class="btn">Edit</a>
+    <a href="{% url 'delete_sticky_note' note.pk %}" class="btn">Delete</a>
+</p>
+{% endblock %}

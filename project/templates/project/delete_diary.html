@@ -1,0 +1,27 @@
+<!-- File: project/templates/project/delete_diary.html -->
+<!-- Author: Louise Lee, llouise, 12/02/2025 -->
+<!-- Description: Deleting diary entry -->
+
+<!-- Inherit structure and layout of base -->
+{% extends 'project/base.html' %}
+
+{% block content %}
+<h1>📔 Delete Diary Entry</h1>
+<h2>Are you sure?</h2>
+<p>You're about to delete this diary entry:</p>
+<p>&nbsp;</p>
+
+<!-- Warning and re-show entry selected to delete -->
+<h3>{{ entry.title }}</h3>
+<p><small>{{ entry.date|date:"F d, Y" }}</small></p>
+<p>{{ entry.content|truncatewords:30 }}</p>
+
+<!-- Submit button to send form -->
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit" class="btn">Yes, Delete</button>
+    <!-- Redirect to the entry if cancel -->
+    <div style="text-align: center;">
+    <a href="{% url 'diary_detail' entry.pk %}" class="btn">Cancel</a></div>
+</form>
+{% endblock %}

@@ -1,0 +1,29 @@
+<!-- File: project/templates/project/login.html -->
+<!-- Author: Louise Lee, llouise@bu.edu, 12/03/2025 -->
+<!-- Description: Login page display -->
+
+{% extends 'project/base.html' %}
+ 
+{% block content %}
+<h1>Login</h1>
+
+<form method="POST" action="{% url 'login' %}">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+    </table>
+    
+    <!-- After successful login, where to go -->
+    {% if request.GET.next %}
+        <input type="hidden" name="next" value="{{ request.GET.next }}">
+    {% else %}
+        <input type="hidden" name="next" value="{% url 'desk' %}">
+    {% endif %}
+    
+    <p><input type="submit" value="Log in" class="btn"></p>
+</form>
+ 
+<hr>
+<!-- Account creation redirect -->
+<p>Don't have an account? <a href="{% url 'create_profile' %}">Register here</a>.</p>
+{% endblock %}

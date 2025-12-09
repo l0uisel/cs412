@@ -1,0 +1,26 @@
+<!-- File: project/templates/project/diary_detail.html -->
+<!-- Author: Louise Lee, llouise, 12/02/2025 -->
+<!-- Description: Detail of entry -->
+
+<!-- Inherit structure and layout of base -->
+{% extends 'project/base.html' %}
+
+{% block content %}
+<h1>📔 Diary Entry</h1>
+<p>
+    <a href="{% url 'diary_list' %}" class="btn">← Back to All Entries</a>
+</p>
+
+<!-- Diary entry details - dates, title, text -->
+<h2>{{ entry.title }}</h2>
+<p><small>{{ entry.date|date:"F d, Y" }}</small></p>
+<p><small>Created: {{ entry.created_at|date:"M d, Y g:i A" }}</small></p>
+{% if entry.updated_at != entry.created_at %}
+    <p><small>Last updated: {{ entry.updated_at|date:"M d, Y g:i A" }}</small></p>
+{% endif %}
+<p>{{ entry.content|linebreaks }}</p>
+<p>
+    <a href="{% url 'update_diary' entry.pk %}" class="btn">✏️ Edit</a>
+    <a href="{% url 'delete_diary' entry.pk %}" class="btn">Delete Entry</a>
+</p>
+{% endblock %}

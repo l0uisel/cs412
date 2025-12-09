@@ -1,0 +1,22 @@
+<!-- File: project/templates/project/create_sticky_note.html -->
+<!-- Author: Louise Lee, llouise, 12/06/2025 -->
+<!-- Description: Create sticky note -->
+
+<!-- Inherit structure and layout of base -->
+{% extends 'project/base.html' %}
+{% block content %}
+<h1>📝 Create Sticky Note</h1>
+<!-- POST = send data -->
+<form method="POST">
+    {% csrf_token %}
+    <table>
+        <!-- Render form fields as table -->
+        {{ form.as_table }}
+    </table>
+    <!-- Submit button to send form -->
+    <input type="submit" value="Create Note ➕" class="btn">
+    <!-- Link to sticky note list page if cancel -->
+    <div style="text-align: center;">
+    <a href="{% url 'sticky_note_list' %}" class="btn">Cancel</a></div>
+</form>
+{% endblock %}

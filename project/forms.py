@@ -82,15 +82,51 @@ class AddCyclesForm(forms.Form):
         min_value=1,
         max_value=10,
         initial=1,
-        label="How many more cycles?",
-        widget=forms.NumberInput(attrs={"class": "form-input"}),
+        label="Want additional cycles?",
+        widget=forms.NumberInput(
+            attrs={"placeholder": "How many", "class": "form-input"}
+        ),
     )
 
 
-class WaterLogForm(forms.ModelForm):
-    """Form to log water intake"""
+# ----- WATER LOG FORMS -----
 
-    # Add amount user has drank
+
+class WaterLogForm(forms.ModelForm):
+    """Form to CREATE a water log (user can pick date)"""
+
+    # Extra helper: amount to set as starting intake
+    add_amount = forms.IntegerField(
+        required=False,
+        min_value=50,
+        max_value=1000,
+        initial=250,
+        label="Add water (ml)",
+        widget=forms.NumberInput(attrs={"placeholder": "250", "class": "form-input"}),
+    )
+
+    class Meta:
+        model = WaterLog
+        fields = ["date", "daily_goal_ml"]  # date + goal come from the model
+        widgets = {
+            "date": forms.DateInput(
+                attrs={
+                    "type": "date",
+                    "class": "form-input",
+                }
+            ),
+            "daily_goal_ml": forms.NumberInput(
+                attrs={
+                    "min": 500,
+                    "max": 5000,
+                    "class": "form-input",
+                }
+            ),
+        }
+
+
+class WaterLogUpdateForm(forms.ModelForm):
+    """Form to UPDATE a water log (date fixed; only goal + add water)."""
 
     add_amount = forms.IntegerField(
         required=False,
@@ -101,14 +137,16 @@ class WaterLogForm(forms.ModelForm):
         widget=forms.NumberInput(attrs={"placeholder": "250", "class": "form-input"}),
     )
 
-    # Daily water goal user wants to drink
-
     class Meta:
         model = WaterLog
-        fields = ["daily_goal_ml"]
+        fields = ["daily_goal_ml"]  # no 'date' here → user can't change it
         widgets = {
             "daily_goal_ml": forms.NumberInput(
-                attrs={"min": 500, "max": 5000, "class": "form-input"}
+                attrs={
+                    "min": 500,
+                    "max": 5000,
+                    "class": "form-input",
+                }
             ),
         }
 
@@ -153,11 +191,11 @@ class PhotoItemForm(forms.ModelForm):
 class StickyNoteForm(forms.ModelForm):
     """Form to create or update sticky notes"""
 
-    # Stickynote title, content, color, due_date and if completed
+    # Stickynote title, content, due_date and if completed
 
     class Meta:
         model = StickyNote
-        fields = ["title", "content", "color", "due_date", "is_completed"]
+        fields = ["title", "content", "due_date", "is_completed"]
         widgets = {
             "title": forms.TextInput(
                 attrs={"placeholder": "Note title...", "class": "form-input"}
@@ -169,7 +207,6 @@ class StickyNoteForm(forms.ModelForm):
                     "class": "form-textarea",
                 }
             ),
-            "color": forms.Select(attrs={"class": "form-select"}),
             "due_date": forms.DateInput(attrs={"type": "date", "class": "form-input"}),
             "is_completed": forms.CheckboxInput(attrs={"class": "form-checkbox"}),
         }

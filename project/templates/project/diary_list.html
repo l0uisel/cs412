@@ -1,0 +1,49 @@
+<!-- File: project/templates/project/diary_list.html -->
+<!-- Author: Louise Lee, llouise, 12/02/2025 -->
+<!-- Description: All diary entries listed -->
+
+<!-- Inherit structure and layout of base -->
+{% extends 'project/base.html' %}
+
+{% block content %}
+<div class="page-header">
+    <h1>📔 | Diary Entries</h1>
+
+    <form method="get" class="diary-search-form">
+        <input
+            type="text"
+            name="q"
+            value="{{ query|default:'' }}"
+            placeholder="Search diary entries..."
+            class="form-input"
+        >
+        <button type="submit" class="btn btn-small">Search</button>
+    </form>
+</div>
+<p>
+    <a href="{% url 'create_diary' %}" class="btn">➕ New Entry</a>
+    <a href="{% url 'desk' %}" class="btn">← Back to Desk</a>
+</p>
+
+<p>&nbsp;</p>
+<ul>
+    {% for entry in entries %}
+    <!-- Snippet of entries, users can select for detail -->
+        <li>
+            <h3>{{ entry.title }}</h3>
+            <p><small>{{ entry.date|date:"F d, Y" }}</small></p>
+            <p>{{ entry.content|truncatewords:50 }}</p>
+            <p>
+                <a href="{% url 'diary_detail' entry.pk %}" class="btn">Read More</a>
+                <a href="{% url 'update_diary' entry.pk %}" class="btn">Edit</a>
+                <a href="{% url 'delete_diary' entry.pk %}" class="btn">Delete</a>
+            </p>
+        </li>
+        <p>&nbsp;</p>
+        <hr>
+        <p>&nbsp;</p>
+    {% empty %}
+        <li>No diary entries yet. Write your first entry!</li>
+    {% endfor %}
+</ul>
+{% endblock %}

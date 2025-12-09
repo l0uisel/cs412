@@ -1,0 +1,28 @@
+<!-- File: project/templates/project/create_water_log.html -->
+<!-- Author: Louise Lee, llouise, 12/09/2025 -->
+<!-- Description: Create a new water log entry -->
+
+<!-- Inherit structure and layout of base -->
+{% extends 'project/base.html' %}
+
+{% block content %}
+<h1>💧 New Water Log</h1>
+<p><a href="{% url 'water_log_list' %}" class="btn">← Back to History</a></p>
+<p>&nbsp;</p>
+<p><small>
+    Use "Add water (ml)" to set your starting intake,
+    and set your daily goal (ml).
+</small></p>
+
+<!-- POST = send data -->
+<form method="POST">
+    {% csrf_token %}
+    <!-- Render form fields as table -->
+    <table>
+        {{ form.as_table }}
+    </table>
+    <input type="submit" value="Create Log" class="btn">
+    <div style="text-align: center;">
+    <a href="{% url 'water_log_list' %}" class="btn">Cancel</a></div>
+</form>
+{% endblock %}

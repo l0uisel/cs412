@@ -1,0 +1,38 @@
+<!-- File: mini_insta/templates/project/create_profile_form.html -->
+<!-- Author: Louise Lee, llouise@bu.edu, 12/08/2025 -->
+<!-- Description: Allow ability to create profile with user account -->
+
+<!-- Inherit structure and layout of base -->
+{% extends "project/base.html" %}
+
+<!-- Username, display name and password -->
+{% block content %}
+<h1>Create your Desk account</h1>
+
+<form method="POST">
+  {% csrf_token %}
+
+  <fieldset>
+    <legend>Account</legend>
+    {{ user_form.non_field_errors }}
+    <table>
+      {{ user_form.as_table }}
+    </table>
+  </fieldset>
+
+  <fieldset>
+    <legend>Profile</legend>
+    {{ form.non_field_errors }}
+    <table>
+      {{ form.as_table }}
+    </table>
+  </fieldset>
+
+  <!-- Submit and/or redirect to desk -->
+  <div class="button-container">
+    <input type="submit" value="Create Profile" class="btn">
+    <div style="text-align: center;">
+    <a href="{% url 'desk' %}" class="btn cancel">Cancel</a></div>
+  </div>
+</form>
+{% endblock %}

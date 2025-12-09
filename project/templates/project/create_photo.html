@@ -1,0 +1,24 @@
+<!-- File: project/templates/project/create_photo.html -->
+<!-- Author: Louise Lee, llouise, 12/06/2025 -->
+<!-- Description: Adding a photo to desk page -->
+
+<!-- Inherit structure and layout of base -->
+{% extends 'project/base.html' %}
+{% block content %}
+<h1>🖼️ Add Photo to Your Desk</h1>
+<em>Only your most recent upload will be framed at desk</em>
+<!-- POST = send data, enctype for file upload -->
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <table>
+        <!-- Render form fields as table -->
+        {{ form.as_table }}
+    </table>
+    <!-- Submit button to send form -->
+    <input type="submit" value="Add to Desk 📷" class="btn">
+    <!-- Link to photo list page if cancel -->
+    <div style="text-align: center;">
+        <a href="{% url 'photo_list' %}" class="btn">Cancel</a>
+    </div>
+</form>
+{% endblock %}

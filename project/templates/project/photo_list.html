@@ -1,0 +1,36 @@
+<!-- File: project/templates/project/photo_list.html -->
+<!-- Author: Louise Lee, llouise, 12/06/2025 -->
+<!-- Description: Desk photo list -->
+
+<!-- Inherit structure and layout of base -->
+{% extends 'project/base.html' %}
+
+{% block content %}
+<h1>🖼️ | My Photos</h1>
+<p>
+    <a href="{% url 'create_photo' %}" class="btn">➕ Add Photo</a>
+    <a href="{% url 'desk' %}" class="btn">← Back to Desk</a>
+</p>
+<p>&nbsp;</p>
+<ul>
+    {% for photo in photos %}
+        <!-- Snippet of entries, users can select for detail -->
+        <li>
+            <img src="{{ photo.image.url }}" alt="{{ photo.caption }}" style="width: 100%; max-width: 300px;">
+            {% if photo.caption %}
+                <p>{{ photo.caption }}</p>
+            {% endif %}
+            <p><small>Added: {{ photo.date_added|date:"M d, Y" }}</small></p>
+            <p>
+                <a href="{% url 'photo_detail' photo.pk %}" class="btn">View</a>
+                <a href="{% url 'delete_photo' photo.pk %}" class="btn">Delete</a>
+            </p>
+        </li>
+        <p>&nbsp;</p>
+        <hr>
+        <p>&nbsp;</p>
+    {% empty %}
+        <li>No photos yet. Add your first photo!</li>
+    {% endfor %}
+</ul>
+{% endblock %}

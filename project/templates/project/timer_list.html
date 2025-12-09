@@ -1,0 +1,45 @@
+<!-- File: project/templates/project/timer_list.html -->
+<!-- Author: Louise Lee, llouise, 12/08/2025 -->
+<!-- Description: List all timer sessions -->
+
+<!-- Inherit structure and layout of base -->
+{% extends 'project/base.html' %}
+
+
+{% block content %}
+<h1>⏱️ | Timer Sessions</h1>
+
+<p>
+    <a href="{% url 'create_timer' %}" class="btn">➕ New Timer Session</a>
+    <a href="{% url 'desk' %}" class="btn">← Back to Desk</a>
+</p>
+
+<ul>
+    {% for timer in timers %}
+    <!-- Snippet of pomodoro timers you have, users can select for detail -->
+        <li>
+            <h3>{{ timer.label|default:"Focus Session" }}</h3>
+            <p><strong>Started:</strong> {{ timer.start_time|date:"M d, Y - g:i A" }}</p>
+            <p><strong>Status:</strong> 
+                {% if timer.status == 'active' %}🟢 Active
+                {% elif timer.status == 'completed' %}✅ Completed
+                {% else %}❌ Cancelled{% endif %}
+            </p>
+            <p><strong>Progress:</strong> {{ timer.cycles_completed }} / {{ timer.planned_cycles }} cycles</p>
+            <p><strong>Duration:</strong> {{ timer.focus_duration_minutes }}min focus / {{ timer.break_duration_minutes }}min break</p>
+            
+            <p>
+                <a href="{% url 'timer_detail' timer.pk %}" class="btn">View Details</a>
+                {% if timer.status != 'active' %}
+                    <a href="{% url 'delete_timer' timer.pk %}" class="btn">Delete</a>
+                {% endif %}
+            </p>
+        </li>
+        <p>&nbsp;</p>
+        <hr>
+        <p>&nbsp;</p>
+    {% empty %}
+        <li>No timer sessions yet. Start your first focus session!</li>
+    {% endfor %}
+</ul>
+{% endblock %}
